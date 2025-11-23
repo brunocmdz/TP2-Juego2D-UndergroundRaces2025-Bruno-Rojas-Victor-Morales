@@ -6,6 +6,7 @@
   <SourceFiles>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/../../../../../Downloads/clio-underground-races-2025-doblando.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/../../../../../Downloads/contadorUnderground.png</File>
+    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/menu-selection-102220.mp3</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/motor-corsa.wav</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (1).png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (2).png</File>
@@ -36,6 +37,7 @@
   <DestFiles>
     <File>images/clio-underground-races-2025-doblando.png</File>
     <File>images/contadorUnderground.png</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>images/backgroundPLANTILLA.png</File>
     <File>images/backgroundPLANTILLA2.png</File>
