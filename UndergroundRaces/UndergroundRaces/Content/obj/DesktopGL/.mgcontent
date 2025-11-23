@@ -4,6 +4,7 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/../../../../../Downloads/clio-underground-races-2025-doblando.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/../../../../../Downloads/contadorUnderground.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/motor-corsa.wav</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (1).png</File>
@@ -17,8 +18,8 @@
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel6.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel7.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel8.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-avanzando.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-doblando.png</File>
+    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-avanzando-plantilla.png</File>
+    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-doblando-plantilla.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsa-underground-races-2025-avanzando.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsa-underground-races-2025-doblando.png</File>
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsaDoblandoPLANTILLA.png</File>
@@ -33,6 +34,7 @@
     <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/señalizaciones-underground-races-2025.png</File>
   </SourceFiles>
   <DestFiles>
+    <File>images/clio-underground-races-2025-doblando.png</File>
     <File>images/contadorUnderground.png</File>
     <File xsi:nil="true" />
     <File>images/backgroundPLANTILLA.png</File>

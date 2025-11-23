@@ -15,6 +15,7 @@ namespace UndergroundRaces
         private IEscena _escenaActual;
         private EscenaMenu _menu;
         private EscenaJuego _juego;
+        private EscenaMenuSeleccionar _menuSeleccionar;
         private EscenaMenuJuego _menuJuego;
         private EscenaMenuAjustes _menuAjustes;
 
@@ -37,12 +38,21 @@ namespace UndergroundRaces
 
             _menu = new EscenaMenu();
             _menu.LoadContent(this);
-            _menu.OnJugarClick = CambiarAEscenaJuego;
+            _menu.OnJugarClick = CambiarAEscenaSeleccionar;
             _menu.OnAjustesClick = CambiarAEscenaAjustes;
+
+            _menuSeleccionar = new EscenaMenuSeleccionar();
+            _menuSeleccionar.LoadContent(this);
 
             _juego = new EscenaJuego();
             _juego.LoadContent(this);
             _juego.OnPausaSolicitada = CambiarAMenuJuego;
+
+            // ahora que _juego existe, conectar la seleccion
+            _menuSeleccionar.OnSeleccionVehiculo = (veh) => {
+                _juego.SetVehiculo(veh);
+                _escenaActual = _juego;
+            };
 
             _menuJuego = new EscenaMenuJuego();
             _menuJuego.LoadContent(this);
@@ -73,6 +83,11 @@ namespace UndergroundRaces
         private void CambiarAEscenaJuego()
         {
             _escenaActual = _juego;
+        }
+
+        private void CambiarAEscenaSeleccionar()
+        {
+            _escenaActual = _menuSeleccionar;
         }
 
         private void CambiarAMenuJuego()

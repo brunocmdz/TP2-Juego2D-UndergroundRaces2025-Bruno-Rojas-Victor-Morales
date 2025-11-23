@@ -11,6 +11,18 @@ namespace UndergroundRaces
     // Manejo de escena del juego: fondo, auto, sonido y carteles
     public class EscenaJuego : IEscena
     {
+        public enum VehicleType { Corsa, Clio }
+
+        private VehicleType _vehiculoSeleccionado = VehicleType.Corsa;
+
+        // Clio atlases/frames
+        private Texture2D _clioAtlas;
+        private List<Rectangle> _framesClio = new();
+        private Texture2D _clioDoblandoAtlas;
+        private List<Rectangle> _framesClioDoblando = new();
+        // Escalas por vehículo
+        private float _corsaScale = 3f;
+        private float _clioScale = 2.2f; // más pequeño para Clio
         // Fondo animado
         private Texture2D _fondoAtlas;
         private List<Rectangle> _framesFondo = new();
@@ -89,11 +101,19 @@ namespace UndergroundRaces
             _fondoAtlas = _content.Load<Texture2D>("images/backgroundPLANTILLA2");
             GenerarFramesFondo(_fondoAtlas, 1024, 576);
 
+            // Corsa (plantilla)
             _corsaAtlas = _content.Load<Texture2D>("images/corsaPLANTILLA");
             GenerarFramesCorsa(_corsaAtlas, _corsaAtlas.Width, _corsaAtlas.Height / 2);
 
             _corsaDoblandoAtlas = _content.Load<Texture2D>("images/corsaDoblandoPLANTILLA");
             GenerarFramesDoblando(_corsaDoblandoAtlas, _corsaDoblandoAtlas.Width, _corsaDoblandoAtlas.Height / 2);
+
+            // Clio (otros assets)
+            _clioAtlas = _content.Load<Texture2D>("images/clio-underground-races-2025-avanzando-plantilla");
+            GenerarFramesEnLista(_clioAtlas, _clioAtlas.Width, _clioAtlas.Height / 2, _framesClio);
+
+            _clioDoblandoAtlas = _content.Load<Texture2D>("images/clio-underground-races-2025-doblando-plantilla");
+            GenerarFramesEnLista(_clioDoblandoAtlas, _clioDoblandoAtlas.Width, _clioDoblandoAtlas.Height / 2, _framesClioDoblando);
 
             _motorSound = _content.Load<SoundEffect>("audio/motor-corsa");
             _motorInstance = _motorSound.CreateInstance();
@@ -127,7 +147,10 @@ namespace UndergroundRaces
             float lateralBase = 3.5f;
 
             int screenWidth = _graphicsDevice.Viewport.Width;
-            float corsaAncho = _corsaAtlas.Width * 3f;
+            // Usar la escala del vehículo seleccionado para calcular límites laterales
+            float currentScale = (_vehiculoSeleccionado == VehicleType.Corsa) ? _corsaScale : _clioScale;
+            float vehicleFrameWidth = (_vehiculoSeleccionado == VehicleType.Corsa ? _framesCorsa[0].Width : _framesClio[0].Width);
+            float corsaAncho = vehicleFrameWidth * currentScale;
             float corsaMitad = corsaAncho / 2f;
 
             float rutaMargenIzquierdo = 200f;
@@ -291,17 +314,37 @@ namespace UndergroundRaces
 
             if (_usandoAtlas)
             {
-                Rectangle corsaRect = _framesCorsa[_frameCorsaActual];
-                Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
-                Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
-                spriteBatch.Draw(_corsaAtlas, drawPos, corsaRect, Color.White, 0f, origin, 3f, _spriteEffect, 0f);
+                if (_vehiculoSeleccionado == VehicleType.Corsa)
+                {
+                    Rectangle corsaRect = _framesCorsa[_frameCorsaActual];
+                    Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_corsaAtlas, drawPos, corsaRect, Color.White, 0f, origin, _corsaScale, _spriteEffect, 0f);
+                }
+                else
+                {
+                    Rectangle clioRect = _framesClio[_frameCorsaActual];
+                    Vector2 origin = new Vector2(clioRect.Width / 2f, clioRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_clioAtlas, drawPos, clioRect, Color.White, 0f, origin, _clioScale, _spriteEffect, 0f);
+                }
             }
             else
             {
-                Rectangle corsaRect = _framesDoblando[_frameDoblandoActual];
-                Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
-                Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
-                spriteBatch.Draw(_corsaDoblandoAtlas, drawPos, corsaRect, Color.White, 0f, origin, 3f, _spriteEffect, 0f);
+                if (_vehiculoSeleccionado == VehicleType.Corsa)
+                {
+                    Rectangle corsaRect = _framesDoblando[_frameDoblandoActual];
+                    Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_corsaDoblandoAtlas, drawPos, corsaRect, Color.White, 0f, origin, _corsaScale, _spriteEffect, 0f);
+                }
+                else
+                {
+                    Rectangle clioRect = _framesClioDoblando[_frameDoblandoActual];
+                    Vector2 origin = new Vector2(clioRect.Width / 2f, clioRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_clioDoblandoAtlas, drawPos, clioRect, Color.White, 0f, origin, _clioScale, _spriteEffect, 0f);
+                }
             }
 
             spriteBatch.Draw(_cartelIzqActual, _posCartelIzq, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
@@ -348,6 +391,20 @@ namespace UndergroundRaces
             {
                 _framesDoblando.Add(new Rectangle(0, y * altoFrame, anchoFrame, altoFrame));
             }
+        }
+
+        private void GenerarFramesEnLista(Texture2D atlas, int anchoFrame, int altoFrame, List<Rectangle> lista)
+        {
+            int filas = atlas.Height / altoFrame;
+            for (int y = 0; y < filas; y++)
+            {
+                lista.Add(new Rectangle(0, y * altoFrame, anchoFrame, altoFrame));
+            }
+        }
+
+        public void SetVehiculo(VehicleType veh)
+        {
+            _vehiculoSeleccionado = veh;
         }
     }
 }
