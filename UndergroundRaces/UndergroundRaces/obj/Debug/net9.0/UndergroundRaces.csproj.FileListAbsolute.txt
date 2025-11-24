@@ -102,7 +102,6 @@ c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bi
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\motor-corsa.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\background.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\backgroundPLANTILLA.xnb
-c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-doblando.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\corsa-underground-races-2025-avanzando.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\corsa-underground-races-2025-doblando.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\faroles-underground-races-2025.xnb
@@ -212,7 +211,6 @@ c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bi
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\cartel6.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\cartel7.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\cartel8.xnb
-c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\contadorUnderground.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-juego-underground-races-2025.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-principal-seleccionar.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-principal-underground-races-plantilla.xnb
@@ -225,3 +223,5 @@ c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-avanzando-plantilla.xnb
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-doblando-plantilla.xnb
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-principal-underground-races-plantilla.xnb
+c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\font\afa.xnb
+c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net).xnb

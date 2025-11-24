@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using System;
@@ -53,6 +54,11 @@ namespace UndergroundRaces
         // Efectos de sonido del auto
         private SoundEffect _motorSound;
         private SoundEffectInstance _motorInstance;
+        // Sonido de frenado (puede cargarse como SoundEffect o Song segun el pipeline)
+        private SoundEffect _brakeSound;
+        private SoundEffectInstance _brakeInstance;
+        private Song _brakeSong;
+        private bool _isBraking = false;
         private float _motorVolume = 0f;
         private const float _volumenMaximo = 0.5f;
         private const float _velocidadCambioVolumen = 0.01f;
@@ -78,27 +84,35 @@ namespace UndergroundRaces
         // Aceleración / velocidad
         private float _velocidadActual = 0f;
         private float _velocidadObjetivo = 0f;
-        private const float _velocidadMax = 6.0f;
-        private const float _aceleracionRate = 3.5f; // unidades por segundo
-        private const float _desaceleracionRate = 4.5f; // unidades por segundo
+        private const float _velocidadMax = 18.0f;
+        private const float _aceleracionRate = 6.0f; // unidades por segundo (aumentada)
+        private const float _desaceleracionRate = 6.0f; // unidades por segundo (aumentada)
+        // Valor de la frenada al mantener S (unidades por segundo)
+        private const float _brakeRate = 12.0f;
+        // Ritmo de desaceleración por inercia (coasting) cuando se suelta el acelerador
+        private const float _coastRate = 1.5f;
+        // Valor máximo mostrado al usuario en el medidor (km/h)
+        private const float _velocidadMaxKmh = 240f;
         // Avance visual del auto al acelerar
         private float _offsetForward = 0f;
         private float _offsetForwardTarget = 0f;
         private const float _offsetMax = 20f; // pixeles hacia arriba
         private const float _offsetLerpSpeed = 8f; // rapidez de la interpolacion
 
-private Vector2 _posVehiculoIA;
-private int _frameIAActual = 0;
+        private Vector2 _posVehiculoIA;
+        private int _frameIAActual = 0;
         private float _timerIA = 0f;
-private float _tiempoCambioIA = 2.5f; // cada 2.5s cambia su ritmo
-private float _tiempoPorFrameIA = 0.08f;
-private VehicleType _vehiculoIA;
-private float _velocidadIAFactor = 1f;
-private float _timerVariacionIA = 0f;
-private SpriteEffects _spriteEffectIA = SpriteEffects.None;
+        private float _tiempoCambioIA = 2.5f; // cada 2.5s cambia su ritmo
+        private float _tiempoPorFrameIA = 0.08f;
+        private VehicleType _vehiculoIA;
+        private float _velocidadIAFactor = 1f;
+        private float _timerVariacionIA = 0f;
+        private SpriteEffects _spriteEffectIA = SpriteEffects.None;
 
         private GraphicsDevice _graphicsDevice;
         private ContentManager _content;
+        private Texture2D _debugPixel;
+        private SpriteFont _afaFont;
 
         public void LoadContent(Game game)
         {
@@ -130,6 +144,21 @@ private SpriteEffects _spriteEffectIA = SpriteEffects.None;
             _motorInstance.Volume = 0f;
             _motorInstance.Play();
 
+            // Intentar cargar sonido de freno: primero como SoundEffect (wav/ogg), si falla intentar cargar como Song (mp3)
+            try
+            {
+                // intenta una ruta simple (sin espacios)
+                _brakeSound = _content.Load<SoundEffect>("audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net)");
+                _brakeInstance = _brakeSound.CreateInstance();
+            }
+            catch
+            {
+                // intentar con el nombre completo presente en Content.mgcb
+                _brakeSound = _content.Load<SoundEffect>("audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net).wav");
+                _brakeInstance = _brakeSound.CreateInstance();
+        
+            }
+
             for (int i = 1; i <= 8; i++)
             {
                 _carteles.Add(_content.Load<Texture2D>($"images/cartel{i}"));
@@ -149,12 +178,29 @@ private SpriteEffects _spriteEffectIA = SpriteEffects.None;
             _corsaPosition = new Vector2(screenWidth / 2f, 500);
             _posVehiculoIA = new Vector2(_graphicsDevice.Viewport.Width / 2f, -100); // aparece desde el fondo
 
+            // Pixel 1x1 para dibujado de rectángulos/debug
+            _debugPixel = new Texture2D(_graphicsDevice, 1, 1);
+            _debugPixel.SetData(new[] { Color.White });
+
+            // Cargar la fuente 'afa' para el medidor de velocidad (si existe)
+            try
+            {
+                _afaFont = _content.Load<SpriteFont>("font/afa");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[EscenaJuego] No se pudo cargar la fuente 'font/afa': {ex.Message}");
+                _afaFont = null;
+            }
+
         }
 
 public void Update(GameTime gameTime)
 {
     var state = Keyboard.GetState();
     float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        // comprobar estado de frenado desde el principio para usarlo en la lógica de coasting
+        bool currentlyBraking = state.IsKeyDown(Keys.Space);
     float lateralBase = 3.5f;
 
     int screenWidth = _graphicsDevice.Viewport.Width;
@@ -204,9 +250,68 @@ public void Update(GameTime gameTime)
     }
     else if (_velocidadActual > _velocidadObjetivo)
     {
-        _velocidadActual -= _desaceleracionRate * dt;
+        // Si no se está acelerando y no se está usando el freno, aplicar coasting (más lento)
+        if (!_avanzando && !currentlyBraking)
+        {
+            _velocidadActual -= _coastRate * dt;
+        }
+        else
+        {
+            _velocidadActual -= _desaceleracionRate * dt;
+        }
         if (_velocidadActual < _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
     }
+
+    // Frenado manual: si se mantiene Space, aplicar descenso rápido hasta 0
+    if (currentlyBraking)
+    {
+        _velocidadActual -= _brakeRate * dt;
+        if (_velocidadActual < 0f) _velocidadActual = 0f;
+    }
+
+    // Reproducir/Detener sonido de freno al empezar/parar de frenar
+    if (currentlyBraking && !_isBraking)
+    {
+        // empezó a frenar
+        try
+        {
+            if (_brakeInstance != null)
+            {
+                _brakeInstance.IsLooped = false;
+                _brakeInstance.Volume = 1f;
+                _brakeInstance.Play();
+            }
+            else if (_brakeSong != null)
+            {
+                MediaPlayer.Play(_brakeSong);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[EscenaJuego] Error reproduciendo freno: {ex.Message}");
+        }
+    }
+    else if (!currentlyBraking && _isBraking)
+    {
+        // dejó de frenar
+        try
+        {
+            if (_brakeInstance != null)
+            {
+                _brakeInstance.Stop();
+            }
+            else if (_brakeSong != null)
+            {
+                MediaPlayer.Stop();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[EscenaJuego] Error deteniendo freno: {ex.Message}");
+        }
+    }
+
+    _isBraking = currentlyBraking;
 
     float speedFactor = _velocidadMax > 0f ? _velocidadActual / _velocidadMax : 0f;
 
@@ -425,6 +530,44 @@ else
 originIA = new Vector2(rectIA.Width / 2f, rectIA.Height / 2f);
 spriteBatch.Draw(atlasIA, _posVehiculoIA, rectIA, Color.White, 0f, originIA, escalaIA, _spriteEffectIA, 0f);
 
+            // Dibujar un rectángulo rojo en la esquina superior derecha (margen 10px)
+            int rectW = 180;
+            int rectH = 100;
+            Rectangle topRightRect = new Rectangle(screenWidth - rectW - 10, 10, rectW, rectH);
+            if (_debugPixel != null)
+            {
+                // fondo rojo del contenedor
+                spriteBatch.Draw(_debugPixel, topRightRect, Color.Red);
+
+                // contenido interior con padding
+                int pad = 8;
+                Rectangle inner = new Rectangle(topRightRect.X + pad, topRightRect.Y + pad, topRightRect.Width - pad * 2, topRightRect.Height - pad * 2);
+
+                // fondo oscuro del medidor
+                spriteBatch.Draw(_debugPixel, inner, new Color(0, 0, 0, 180));
+
+                // calcular factor de velocidad (0..1)
+                float speedFactor = (_velocidadMax > 0f) ? (_velocidadActual / _velocidadMax) : 0f;
+                speedFactor = MathHelper.Clamp(speedFactor, 0f, 1f);
+
+                // dibujar barra de fondo y barra llenada
+                int barHeight = 20;
+                Rectangle barBg = new Rectangle(inner.X + 6, inner.Y + inner.Height / 2 - barHeight / 2, inner.Width - 12, barHeight);
+                spriteBatch.Draw(_debugPixel, barBg, Color.DarkGray);
+                Rectangle barFill = new Rectangle(barBg.X, barBg.Y, (int)(barBg.Width * speedFactor), barBg.Height);
+                spriteBatch.Draw(_debugPixel, barFill, Color.LimeGreen);
+
+                // dibujar texto con la velocidad numérica (usa la fuente 'afa' si está disponible)
+                if (_afaFont != null)
+                {
+                    // Mostrar solo la velocidad actual en km/h (sin el máximo)
+                    float displayedSpeed = MathHelper.Clamp(speedFactor * _velocidadMaxKmh, 0f, _velocidadMaxKmh);
+                    string texto = string.Format("{0:0} km/h", displayedSpeed);
+                    Vector2 medidas = _afaFont.MeasureString(texto);
+                    Vector2 txtPos = new Vector2(inner.X + (inner.Width - medidas.X) / 2f, inner.Y + 6);
+                    spriteBatch.DrawString(_afaFont, texto, txtPos, Color.White);
+                }
+            }
 
             spriteBatch.End();
         }
