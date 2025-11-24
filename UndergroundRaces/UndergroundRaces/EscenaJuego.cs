@@ -87,6 +87,15 @@ namespace UndergroundRaces
         private const float _offsetMax = 20f; // pixeles hacia arriba
         private const float _offsetLerpSpeed = 8f; // rapidez de la interpolacion
 
+private Vector2 _posVehiculoIA;
+private int _frameIAActual = 0;
+        private float _timerIA = 0f;
+private float _tiempoCambioIA = 2.5f; // cada 2.5s cambia su ritmo
+private float _tiempoPorFrameIA = 0.08f;
+private VehicleType _vehiculoIA;
+private float _velocidadIAFactor = 1f;
+private float _timerVariacionIA = 0f;
+private SpriteEffects _spriteEffectIA = SpriteEffects.None;
 
         private GraphicsDevice _graphicsDevice;
         private ContentManager _content;
@@ -138,168 +147,193 @@ namespace UndergroundRaces
             _posCartelDerInicial = _posCartelDer;
 
             _corsaPosition = new Vector2(screenWidth / 2f, 500);
+            _posVehiculoIA = new Vector2(_graphicsDevice.Viewport.Width / 2f, -100); // aparece desde el fondo
+
         }
 
-        public void Update(GameTime gameTime)
+public void Update(GameTime gameTime)
+{
+    var state = Keyboard.GetState();
+    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+    float lateralBase = 3.5f;
+
+    int screenWidth = _graphicsDevice.Viewport.Width;
+    float currentScale = (_vehiculoSeleccionado == VehicleType.Corsa) ? _corsaScale : _clioScale;
+    float vehicleFrameWidth = (_vehiculoSeleccionado == VehicleType.Corsa ? _framesCorsa[0].Width : _framesClio[0].Width);
+    float corsaAncho = vehicleFrameWidth * currentScale;
+    float corsaMitad = corsaAncho / 2f;
+
+    float rutaMargenIzquierdo = 200f;
+    float rutaMargenDerecho = screenWidth - 200f;
+    float limiteIzquierdo = rutaMargenIzquierdo - corsaMitad;
+    float limiteDerecho = rutaMargenDerecho + corsaMitad;
+
+    if (state.IsKeyDown(Keys.Escape))
+        OnPausaSolicitada?.Invoke();
+
+    bool pressingD = state.IsKeyDown(Keys.D);
+    bool pressingA = state.IsKeyDown(Keys.A);
+
+    if (pressingD)
+    {
+        _usandoAtlas = false;
+        _spriteEffect = SpriteEffects.None;
+    }
+    else if (pressingA)
+    {
+        _usandoAtlas = false;
+        _spriteEffect = SpriteEffects.FlipHorizontally;
+    }
+    else
+    {
+        _usandoAtlas = true;
+        _spriteEffect = SpriteEffects.None;
+        _frameDoblandoActual = 0;
+    }
+
+    // IA copia el estado de doblado del jugador
+    _spriteEffectIA = _spriteEffect;
+
+    _avanzando = state.IsKeyDown(Keys.W);
+    _velocidadObjetivo = _avanzando ? _velocidadMax : 0f;
+
+    if (_velocidadActual < _velocidadObjetivo)
+    {
+        _velocidadActual += _aceleracionRate * dt;
+        if (_velocidadActual > _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
+    }
+    else if (_velocidadActual > _velocidadObjetivo)
+    {
+        _velocidadActual -= _desaceleracionRate * dt;
+        if (_velocidadActual < _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
+    }
+
+    float speedFactor = _velocidadMax > 0f ? _velocidadActual / _velocidadMax : 0f;
+
+    _offsetForwardTarget = -_offsetMax * speedFactor;
+    _offsetForward = MathHelper.Lerp(_offsetForward, _offsetForwardTarget, MathHelper.Clamp(_offsetLerpSpeed * dt, 0f, 1f));
+
+    float velocidadLateral = lateralBase * (0.5f + 0.5f * speedFactor);
+
+    if (pressingD)
+    {
+        if (_corsaPosition.X + velocidadLateral < limiteDerecho)
+            _corsaPosition.X += velocidadLateral;
+
+        _timerDoblando += dt * (0.5f + speedFactor);
+        if (_timerDoblando >= _tiempoPorFrameDoblando)
         {
-            // Entradas del jugador
-            var state = Keyboard.GetState();
-            float lateralBase = 3.5f;
-
-            int screenWidth = _graphicsDevice.Viewport.Width;
-            // Usar la escala del vehículo seleccionado para calcular límites laterales
-            float currentScale = (_vehiculoSeleccionado == VehicleType.Corsa) ? _corsaScale : _clioScale;
-            float vehicleFrameWidth = (_vehiculoSeleccionado == VehicleType.Corsa ? _framesCorsa[0].Width : _framesClio[0].Width);
-            float corsaAncho = vehicleFrameWidth * currentScale;
-            float corsaMitad = corsaAncho / 2f;
-
-            float rutaMargenIzquierdo = 200f;
-            float rutaMargenDerecho = screenWidth - 200f;
-            float limiteIzquierdo = rutaMargenIzquierdo - corsaMitad;
-            float limiteDerecho = rutaMargenDerecho + corsaMitad;
-
-            // Pausa del juego
-            if (state.IsKeyDown(Keys.Escape))
-                OnPausaSolicitada?.Invoke();
-
-            bool pressingD = state.IsKeyDown(Keys.D);
-            bool pressingA = state.IsKeyDown(Keys.A);
-
-            if (pressingD)
-            {
-                _usandoAtlas = false;
-                _spriteEffect = SpriteEffects.None;
-            }
-            else if (pressingA)
-            {
-                _usandoAtlas = false;
-                _spriteEffect = SpriteEffects.FlipHorizontally;
-            }
-            else
-            {
-                _usandoAtlas = true;
-                _spriteEffect = SpriteEffects.None;
-                _frameDoblandoActual = 0;
-            }
-            // Aceleración: objetivo cuando se presiona W
-            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _avanzando = state.IsKeyDown(Keys.W);
-            _velocidadObjetivo = _avanzando ? _velocidadMax : 0f;
-
-            if (_velocidadActual < _velocidadObjetivo)
-            {
-                _velocidadActual += _aceleracionRate * dt;
-                if (_velocidadActual > _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
-            }
-            else if (_velocidadActual > _velocidadObjetivo)
-            {
-                _velocidadActual -= _desaceleracionRate * dt;
-                if (_velocidadActual < _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
-            }
-
-            float speedFactor = _velocidadMax > 0f ? _velocidadActual / _velocidadMax : 0f;
-
-            // Calcular target del offset vertical del auto (se mueve hacia arriba al acelerar)
-            _offsetForwardTarget = -_offsetMax * speedFactor;
-            _offsetForward = MathHelper.Lerp(_offsetForward, _offsetForwardTarget, MathHelper.Clamp(_offsetLerpSpeed * dt, 0f, 1f));
-
-            // Movimiento lateral escalado por velocidad actual (pero siempre usable)
-            float velocidadLateral = lateralBase * (0.5f + 0.5f * speedFactor);
-
-            if (pressingD)
-            {
-                if (_corsaPosition.X + velocidadLateral < limiteDerecho)
-                    _corsaPosition.X += velocidadLateral;
-
-                _timerDoblando += dt * (0.5f + speedFactor);
-                if (_timerDoblando >= _tiempoPorFrameDoblando)
-                {
-                    _timerDoblando = 0f;
-                    _frameDoblandoActual = (_frameDoblandoActual + 1) % _framesDoblando.Count;
-                }
-            }
-            else if (pressingA)
-            {
-                if (_corsaPosition.X - velocidadLateral > limiteIzquierdo)
-                    _corsaPosition.X -= velocidadLateral;
-
-                _timerDoblando += dt * (0.5f + speedFactor);
-                if (_timerDoblando >= _tiempoPorFrameDoblando)
-                {
-                    _timerDoblando = 0f;
-                    _frameDoblandoActual = (_frameDoblandoActual + 1) % _framesDoblando.Count;
-                }
-            }
-
-            // Animaciones y carteles dependen de speedFactor
-            if (speedFactor > 0.01f)
-            {
-                _timerFrame += dt * (0.5f + speedFactor * 1.5f);
-                if (_timerFrame >= _tiempoPorFrameBase)
-                {
-                    _timerFrame = 0f;
-                    _frameActual = (_frameActual + 1) % _framesFondo.Count;
-                }
-
-                _timerCorsa += dt * (0.5f + speedFactor * 1.5f);
-                if (_timerCorsa >= _tiempoPorFrameCorsa)
-                {
-                    _timerCorsa = 0f;
-                    _frameCorsaActual = (_frameCorsaActual + 1) % _framesCorsa.Count;
-                }
-
-                Vector2 direccionIzq = new Vector2(-1.5f, 1f);
-                Vector2 direccionDer = new Vector2(1.5f, 1f);
-
-                direccionIzq.Normalize();
-                direccionDer.Normalize();
-
-                _posCartelIzq += direccionIzq * _velocidadCartel * (0.5f + speedFactor);
-                _posCartelDer += direccionDer * _velocidadCartel * (0.5f + speedFactor);
-
-                _timerCartelIzq += dt;
-                _timerCartelDer += dt;
-
-                if (_timerCartelIzq >= _tiempoCartel)
-                {
-                    _indiceCartelIzq = (_indiceCartelIzq + 1) % _carteles.Count;
-                    _cartelIzqActual = _carteles[_indiceCartelIzq];
-                    _posCartelIzq = _posCartelIzqInicial;
-                    _timerCartelIzq = 0f;
-                }
-
-                if (_timerCartelDer >= _tiempoCartel)
-                {
-                    _indiceCartelDer = (_indiceCartelDer + 1) % _carteles.Count;
-                    _cartelDerActual = _carteles[_indiceCartelDer];
-                    _posCartelDer = _posCartelDerInicial;
-                    _timerCartelDer = 0f;
-                }
-            }
-            else
-            {
-                _frameCorsaActual = 0;
-            }
-
-            // Ajuste de volumen y pitch en base a la velocidad actual
-            float targetVol = _volumenMaximo * ( _velocidadMax > 0f ? (_velocidadActual / _velocidadMax) : 0f );
-            if (_motorVolume < targetVol)
-            {
-                _motorVolume += _velocidadCambioVolumen;
-                if (_motorVolume > targetVol) _motorVolume = targetVol;
-            }
-            else
-            {
-                _motorVolume -= _velocidadCambioVolumen;
-                if (_motorVolume < targetVol) _motorVolume = targetVol;
-            }
-            _motorInstance.Volume = _motorVolume;
-
-            float pitch = -0.2f + ((_velocidadMax > 0f) ? (_velocidadActual / _velocidadMax) * 0.8f : 0f);
-            if (pitch < -1f) pitch = -1f;
-            if (pitch > 1f) pitch = 1f;
-            _motorInstance.Pitch = pitch;
+            _timerDoblando = 0f;
+            _frameDoblandoActual = (_frameDoblandoActual + 1) % _framesDoblando.Count;
         }
+    }
+    else if (pressingA)
+    {
+        if (_corsaPosition.X - velocidadLateral > limiteIzquierdo)
+            _corsaPosition.X -= velocidadLateral;
+
+        _timerDoblando += dt * (0.5f + speedFactor);
+        if (_timerDoblando >= _tiempoPorFrameDoblando)
+        {
+            _timerDoblando = 0f;
+            _frameDoblandoActual = (_frameDoblandoActual + 1) % _framesDoblando.Count;
+        }
+    }
+
+    // IA copia posición del jugador con offset vertical
+    _posVehiculoIA = _corsaPosition + new Vector2(150, 50);
+
+    // IA cambia su ritmo cada cierto tiempo
+    _timerVariacionIA += dt;
+    if (_timerVariacionIA >= _tiempoCambioIA)
+    {
+        _timerVariacionIA = 0f;
+        _velocidadIAFactor = 0.85f + (float)(new Random().NextDouble() * 0.3f);
+    }
+
+    // IA se mueve hacia el jugador con variación
+    Vector2 destinoIA = _corsaPosition;
+    Vector2 direccionIA = Vector2.Normalize(destinoIA - _posVehiculoIA);
+    _posVehiculoIA += direccionIA * _velocidadCartel * (0.5f + speedFactor) * _velocidadIAFactor;
+
+    if (_posVehiculoIA.Y > _graphicsDevice.Viewport.Height + 100)
+        _posVehiculoIA = new Vector2(screenWidth / 2f, -150);
+
+    // Animación IA
+    _timerIA += dt * (0.5f + speedFactor);
+    if (_timerIA >= _tiempoPorFrameIA)
+    {
+        _timerIA = 0f;
+        _frameIAActual = (_frameIAActual + 1) % (_vehiculoIA == VehicleType.Corsa ? _framesCorsa.Count : _framesClio.Count);
+    }
+
+    // Fondo y carteles
+    if (speedFactor > 0.01f)
+    {
+        _timerFrame += dt * (0.5f + speedFactor * 1.5f);
+        if (_timerFrame >= _tiempoPorFrameBase)
+        {
+            _timerFrame = 0f;
+            _frameActual = (_frameActual + 1) % _framesFondo.Count;
+        }
+
+        _timerCorsa += dt * (0.5f + speedFactor * 1.5f);
+        if (_timerCorsa >= _tiempoPorFrameCorsa)
+        {
+            _timerCorsa = 0f;
+            _frameCorsaActual = (_frameCorsaActual + 1) % _framesCorsa.Count;
+        }
+
+        Vector2 direccionIzq = Vector2.Normalize(new Vector2(-1.5f, 1f));
+        Vector2 direccionDer = Vector2.Normalize(new Vector2(1.5f, 1f));
+
+        _posCartelIzq += direccionIzq * _velocidadCartel * (0.5f + speedFactor);
+        _posCartelDer += direccionDer * _velocidadCartel * (0.5f + speedFactor);
+
+        _timerCartelIzq += dt;
+        _timerCartelDer += dt;
+
+        if (_timerCartelIzq >= _tiempoCartel)
+        {
+            _indiceCartelIzq = (_indiceCartelIzq + 1) % _carteles.Count;
+            _cartelIzqActual = _carteles[_indiceCartelIzq];
+            _posCartelIzq = _posCartelIzqInicial;
+            _timerCartelIzq = 0f;
+        }
+
+        if (_timerCartelDer >= _tiempoCartel)
+        {
+            _indiceCartelDer = (_indiceCartelDer + 1) % _carteles.Count;
+            _cartelDerActual = _carteles[_indiceCartelDer];
+            _posCartelDer = _posCartelDerInicial;
+            _timerCartelDer = 0f;
+        }
+    }
+    else
+    {
+        _frameCorsaActual = 0;
+    }
+
+    // Volumen y pitch del motor
+    float targetVol = _volumenMaximo * speedFactor;
+    if (_motorVolume < targetVol)
+    {
+        _motorVolume += _velocidadCambioVolumen;
+        if (_motorVolume > targetVol) _motorVolume = targetVol;
+    }
+    else
+    {
+        _motorVolume -= _velocidadCambioVolumen;
+        if (_motorVolume < targetVol) _motorVolume = targetVol;
+    }
+    _motorInstance.Volume = _motorVolume;
+
+    float pitch = -0.2f + speedFactor * 0.8f;
+    _motorInstance.Pitch = MathHelper.Clamp(pitch, -1f, 1f);
+}
+
+
+        
 
         public void Draw(SpriteBatch spriteBatch)
         {
@@ -349,6 +383,47 @@ namespace UndergroundRaces
 
             spriteBatch.Draw(_cartelIzqActual, _posCartelIzq, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             spriteBatch.Draw(_cartelDerActual, _posCartelDer, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+
+Rectangle rectIA;
+Vector2 originIA;
+float escalaIA;
+Texture2D atlasIA;
+
+if (!_usandoAtlas)
+{
+    // IA también está doblando
+    if (_vehiculoIA == VehicleType.Corsa)
+    {
+        rectIA = _framesDoblando[_frameDoblandoActual];
+        atlasIA = _corsaDoblandoAtlas;
+        escalaIA = _corsaScale;
+    }
+    else
+    {
+        rectIA = _framesClioDoblando[_frameDoblandoActual];
+        atlasIA = _clioDoblandoAtlas;
+        escalaIA = _clioScale;
+    }
+}
+else
+{
+    // IA está recto
+    if (_vehiculoIA == VehicleType.Corsa)
+    {
+        rectIA = _framesCorsa[_frameIAActual];
+        atlasIA = _corsaAtlas;
+        escalaIA = _corsaScale;
+    }
+    else
+    {
+        rectIA = _framesClio[_frameIAActual];
+        atlasIA = _clioAtlas;
+        escalaIA = _clioScale;
+    }
+}
+
+originIA = new Vector2(rectIA.Width / 2f, rectIA.Height / 2f);
+spriteBatch.Draw(atlasIA, _posVehiculoIA, rectIA, Color.White, 0f, originIA, escalaIA, _spriteEffectIA, 0f);
 
 
             spriteBatch.End();
@@ -405,6 +480,7 @@ namespace UndergroundRaces
         public void SetVehiculo(VehicleType veh)
         {
             _vehiculoSeleccionado = veh;
+                _vehiculoIA = (veh == VehicleType.Corsa) ? VehicleType.Clio : VehicleType.Corsa;
         }
     }
 }

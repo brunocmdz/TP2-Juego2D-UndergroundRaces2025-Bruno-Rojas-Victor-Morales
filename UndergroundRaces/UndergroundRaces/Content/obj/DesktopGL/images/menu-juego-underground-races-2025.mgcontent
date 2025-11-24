@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-juego-underground-races-2025.png</SourceFile>
-  <SourceTime>2025-11-22T22:38:09.6369588-03:00</SourceTime>
-  <DestFile>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/images/menu-juego-underground-races-2025.xnb</DestFile>
-  <DestTime>2025-11-22T23:41:35.4109822-03:00</DestTime>
+  <SourceFile>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-juego-underground-races-2025.png</SourceFile>
+  <SourceTime>2025-11-11T18:35:55.0043046-03:00</SourceTime>
+  <DestFile>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/images/menu-juego-underground-races-2025.xnb</DestFile>
+  <DestTime>2025-11-23T23:31:37.8554857-03:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T11:25:32-03:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

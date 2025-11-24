@@ -45,8 +45,6 @@ C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces
 C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\pepsi-cartel-underground-races-2025.xnb
 C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\ypf-cartel-undergorund-races-2025.xnb
 C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\background.xnb
-C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-avanzando.xnb
-C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-doblando.xnb
 C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\corsa-underground-races-2025-avanzando.xnb
 C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\corsa-underground-races-2025-doblando.xnb
 C:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\faroles-underground-races-2025.xnb
@@ -222,3 +220,8 @@ c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bi
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-doblando-plantilla.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\menu-selection-102220.ogg
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\menu-selection-102220.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\menu-selection-102220.ogg
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\menu-selection-102220.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-avanzando-plantilla.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\clio-underground-races-2025-doblando-plantilla.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-principal-underground-races-plantilla.xnb
