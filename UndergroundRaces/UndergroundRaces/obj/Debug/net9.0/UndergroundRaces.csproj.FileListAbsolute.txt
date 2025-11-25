@@ -229,3 +229,5 @@ c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\font\afa.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\car-crash_ext-6388 (mp3cut.net).xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\obstaculo.xnb
+c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.ogg
+c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.xnb

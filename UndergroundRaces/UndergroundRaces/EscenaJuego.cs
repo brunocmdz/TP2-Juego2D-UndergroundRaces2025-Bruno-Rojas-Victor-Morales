@@ -137,6 +137,7 @@ namespace UndergroundRaces
         private SpriteFont _afaFont;
         private Texture2D _obstSprite;
         private SoundEffect _crashSound;
+        private Song _gameSong;
 
         public void LoadContent(Game game)
         {
@@ -249,6 +250,55 @@ namespace UndergroundRaces
                     }
                     catch { _crashSound = null; }
                 }
+            }
+
+            // Intentar cargar música para la escena de juego (usar Song preferido).
+            _gameSong = null;
+            try
+            {
+                string[] gameCandidates = new string[] {
+                    "audio/retro-arcade-game-music-297305",
+                    "audio/retro-arcade-game-music",
+                    "audio/retro_arade",
+                    "audio/retro-arade",
+                    "audio/game-music",
+                    "audio/game_music",
+                    "audio/game"
+                };
+
+                foreach (var cand in gameCandidates)
+                {
+                    try
+                    {
+                        _gameSong = _content.Load<Song>(cand);
+                        System.Diagnostics.Debug.WriteLine($"[EscenaJuego] Cargada canción de juego: {cand}");
+                        break;
+                    }
+                    catch { }
+                }
+            }
+            catch { _gameSong = null; }
+
+            if (_gameSong != null)
+            {
+                try
+                {
+                    if (MediaPlayer.State != MediaState.Playing)
+                    {
+                        MediaPlayer.IsRepeating = true;
+                        MediaPlayer.Volume = 0.5f;
+                        MediaPlayer.Play(_gameSong);
+                        System.Diagnostics.Debug.WriteLine("[EscenaJuego] Reproduciendo música de juego (Song).");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[EscenaJuego] Error al reproducir Song: {ex.Message}");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("[EscenaJuego] No se encontró Song para la música de juego.");
             }
 
             // Cargar la fuente 'afa' para el medidor de velocidad (si existe)

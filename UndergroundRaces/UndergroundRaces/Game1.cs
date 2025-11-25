@@ -60,23 +60,27 @@ namespace UndergroundRaces
                 // Suscripción al evento de fin de carrera
                 _juego.OnFinCarrera += (mensaje) =>
                 {
+                    // Detener inmediatamente el sonido del juego para evitar que el motor siga sonando en Game Over
+                    try { _juego.DetenerSonido(); } catch { }
+
                     var menuConMensaje = new EscenaMenuConMensaje(mensaje);
                     menuConMensaje.LoadContent(this);
 
                     // Botón volver al menú principal
-                menuConMensaje.OnVolverClick = () =>
-                {
-                    _juego.DetenerSonido();
-                    ReiniciarJuego();
+                    menuConMensaje.OnVolverClick = () =>
+                    {
+                        // Asegurar que el sonido está detenido antes de reiniciar
+                        try { _juego.DetenerSonido(); } catch { }
+                        ReiniciarJuego();
 
-                    _menu = new EscenaMenu();
-                    _menu.LoadContent(this);
-                    _menu.OnJugarClick = CambiarAEscenaSeleccionar;
-                    _menu.OnAjustesClick = CambiarAEscenaAjustes;
-                    _menu.OnSalirClick = Exit;
+                        _menu = new EscenaMenu();
+                        _menu.LoadContent(this);
+                        _menu.OnJugarClick = CambiarAEscenaSeleccionar;
+                        _menu.OnAjustesClick = CambiarAEscenaAjustes;
+                        _menu.OnSalirClick = Exit;
 
-                    _escenaActual = _menu;
-                };
+                        _escenaActual = _menu;
+                    };
 
                     _escenaActual = menuConMensaje;
                 };

@@ -37,6 +37,12 @@
 /processorParam:Quality=Best
 /build:audio/motor-corsa.wav
 
+#begin audio/retro-arcade-game-music-297305.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:audio/retro-arcade-game-music-297305.mp3
+
 #begin font/afa.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

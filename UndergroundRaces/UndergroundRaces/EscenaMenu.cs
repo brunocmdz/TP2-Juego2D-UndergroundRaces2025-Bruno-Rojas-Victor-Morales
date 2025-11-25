@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using System;
@@ -24,6 +25,7 @@ namespace UndergroundRaces
         private GraphicsDevice _graphicsDevice;
         private ContentManager _content;
         private Texture2D _debugPixel;
+        private Song _menuSong;
 
         private Rectangle _botonJugar;
         private Rectangle _botonAjustes; 
@@ -62,6 +64,48 @@ namespace UndergroundRaces
             // Crear pixel para debug (dibujar rectángulos)
             _debugPixel = new Texture2D(_graphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
+
+            // Intentar cargar música del menú (Song preferido). Probar varias rutas/nombres comunes (sin extensión)
+            _menuSong = null;
+            string[] candidates = new string[] {
+                "audio/retro-arcade-game-music-297305",
+                "audio/retro-arcade-game-music",
+                "audio/retro_arade",
+                "audio/retro-arade",
+                "audio/menu-music",
+                "audio/menu_music",
+                "audio/menu"
+            };
+
+            foreach (var cand in candidates)
+            {
+                try
+                {
+                    _menuSong = _content.Load<Song>(cand);
+                    Debug.WriteLine($"[Menu] Cargada canción de menú: {cand}");
+                    break;
+                }
+                catch { /* intentar siguiente */ }
+            }
+
+            if (_menuSong != null)
+            {
+                try
+                {
+                    MediaPlayer.IsRepeating = true;
+                    MediaPlayer.Volume = 0.5f;
+                    MediaPlayer.Play(_menuSong);
+                    Debug.WriteLine("[Menu] Reproduciendo música de menú (Song).");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[Menu] Error al reproducir Song: {ex.Message}");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("[Menu] No se encontró ninguna Song para la música del menú. Asegúrate de añadir el asset en Content.mgcb bajo 'audio/'.");
+            }
         }
 
         public void Update(GameTime gameTime)
@@ -77,7 +121,18 @@ namespace UndergroundRaces
             if (_botonJugar.Contains(_mouse.Position)) hovered = 0;
             else if (_botonAjustes.Contains(_mouse.Position)) hovered = 1;
             else if (_botonSalir.Contains(_mouse.Position)) hovered = 2;
-            _frameMenuActual = hovered;
+
+            if (hovered != _lastHovered)
+            {
+                _frameMenuActual = hovered;
+                // Log para depuración: ver si el estado del MediaPlayer cambia al seleccionar
+                try
+                {
+                    Debug.WriteLine($"[Menu] Hover cambiado a {hovered}. MediaPlayer.State={MediaPlayer.State}");
+                }
+                catch { }
+                _lastHovered = hovered;
+            }
 
 
             // Click actions (como antes)
@@ -101,12 +156,6 @@ namespace UndergroundRaces
                         int w = Math.Abs(a.X - b.X);
                         int h = Math.Abs(a.Y - b.Y);
                         var rect = new Rectangle(x, y, w, h);
-                        switch (_assignTarget)
-                        {
-                            case 1: _botonJugar = rect; Debug.WriteLine($"[Menu] JUGAR assigned: {rect}"); break;
-                            case 2: _botonAjustes = rect; Debug.WriteLine($"[Menu] AJUSTES assigned: {rect}"); break;
-                            case 3: _botonSalir = rect; Debug.WriteLine($"[Menu] SALIR assigned: {rect}"); break;
-                        }
                         // reset
                         _assignPointA = null;
                         _assignTarget = 0;
@@ -117,14 +166,17 @@ namespace UndergroundRaces
                     // Click regular: activar botones
                     if (_botonJugar.Contains(_mouse.Position))
                     {
+                        // No detener la música al entrar a Seleccionar: mantener reproducción del menú
                         OnJugarClick?.Invoke();
                     }
                     else if (_botonAjustes.Contains(_mouse.Position))
                     {
+                        // No pausar la música al entrar en Ajustes — mantener reproducción en background
                         OnAjustesClick?.Invoke();
                     }
                     else if (_botonSalir.Contains(_mouse.Position))
                     {
+                        try { MediaPlayer.Stop(); } catch { }
                         Environment.Exit(0);
                     }
                 }
