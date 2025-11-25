@@ -31,6 +31,7 @@ namespace UndergroundRaces
         private MouseState _mouse;
         public Action OnJugarClick;
         public Action OnAjustesClick; 
+        public Action OnSalirClick;
         // Herramienta de asignacion interactiva de rectangulos de botones
         private int _assignTarget = 0; // 0 = none, 1 = Jugar, 2 = Ajustes, 3 = Salir
         private Point? _assignPointA = null;

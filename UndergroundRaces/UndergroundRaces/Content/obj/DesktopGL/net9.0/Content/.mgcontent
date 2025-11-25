@@ -4,35 +4,33 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net).wav</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/menu-selection-102220.mp3</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/motor-corsa.wav</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/font/afa.spritefont</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (1).png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (2).png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel1.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel2.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel3.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel4.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel5.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel6.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel7.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel8.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-avanzando-plantilla.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-doblando-plantilla.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsa-underground-races-2025-avanzando.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsa-underground-races-2025-doblando.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsaDoblandoPLANTILLA.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsaPLANTILLA.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/faroles-underground-races-2025.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-ajustes-underground-races-2025.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-juego-underground-races-2025.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-principal-seleccionar.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-principal-underground-races-2025.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-principal-underground-races-plantilla.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/semaforos-underground-races-2025.png</File>
-    <File>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/señalizaciones-underground-races-2025.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net).wav</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/menu-selection-102220.mp3</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/motor-corsa.wav</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/font/afa.spritefont</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (1).png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background (2) (2).png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/background.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel1.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel2.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel3.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel4.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel5.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel6.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel7.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/cartel8.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-avanzando-plantilla.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/clio-underground-races-2025-doblando-plantilla.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsaDoblandoPLANTILLA.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/corsaPLANTILLA.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/faroles-underground-races-2025.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-ajustes-underground-races-2025.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-juego-underground-races-2025.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-principal-seleccionar.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-principal-underground-races-2025.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/menu-principal-underground-races-plantilla.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/semaforos-underground-races-2025.png</File>
+    <File>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/images/señalizaciones-underground-races-2025.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />
@@ -41,8 +39,6 @@
     <File xsi:nil="true" />
     <File>images/backgroundPLANTILLA.png</File>
     <File>images/backgroundPLANTILLA2.png</File>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

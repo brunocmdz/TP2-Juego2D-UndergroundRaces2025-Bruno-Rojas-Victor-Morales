@@ -36,34 +36,67 @@ namespace UndergroundRaces
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Menú principal
             _menu = new EscenaMenu();
             _menu.LoadContent(this);
             _menu.OnJugarClick = CambiarAEscenaSeleccionar;
             _menu.OnAjustesClick = CambiarAEscenaAjustes;
+            _menu.OnSalirClick = Exit;
 
+            // Menú seleccionar vehículo
             _menuSeleccionar = new EscenaMenuSeleccionar();
             _menuSeleccionar.LoadContent(this);
 
+            // Escena de juego
             _juego = new EscenaJuego();
             _juego.LoadContent(this);
             _juego.OnPausaSolicitada = CambiarAMenuJuego;
 
-            // ahora que _juego existe, conectar la seleccion
-            _menuSeleccionar.OnSeleccionVehiculo = (veh) => {
+            // Conectar selección de vehículo → juego
+            _menuSeleccionar.OnSeleccionVehiculo = (veh) =>
+            {
                 _juego.SetVehiculo(veh);
+
+                // Suscripción al evento de fin de carrera
+                _juego.OnFinCarrera += (mensaje) =>
+                {
+                    var menuConMensaje = new EscenaMenuConMensaje(mensaje);
+                    menuConMensaje.LoadContent(this);
+
+                    // Botón volver al menú principal
+                menuConMensaje.OnVolverClick = () =>
+                {
+                    _juego.DetenerSonido();
+                    ReiniciarJuego();
+
+                    _menu = new EscenaMenu();
+                    _menu.LoadContent(this);
+                    _menu.OnJugarClick = CambiarAEscenaSeleccionar;
+                    _menu.OnAjustesClick = CambiarAEscenaAjustes;
+                    _menu.OnSalirClick = Exit;
+
+                    _escenaActual = _menu;
+                };
+
+                    _escenaActual = menuConMensaje;
+                };
+
                 _escenaActual = _juego;
             };
 
+            // Menú de pausa dentro del juego
             _menuJuego = new EscenaMenuJuego();
             _menuJuego.LoadContent(this);
             _menuJuego.OnReanudarClick = CambiarAEscenaJuego;
             _menuJuego.OnVolverMenuClick = CambiarAMenuPrincipal;
             _menuJuego.OnAjustesClick = CambiarAEscenaAjustes;
 
+            // Menú de ajustes
             _menuAjustes = new EscenaMenuAjustes();
             _menuAjustes.LoadContent(this);
             _menuAjustes.OnVolverClick = VolverDesdeAjustes;
 
+            // Escena inicial
             _escenaActual = _menu;
         }
 
@@ -80,8 +113,10 @@ namespace UndergroundRaces
             base.Draw(gameTime);
         }
 
+        // Métodos de cambio de escena
         private void CambiarAEscenaJuego()
-        {
+        { 
+            _juego.ReanudarSonido(); 
             _escenaActual = _juego;
         }
 
@@ -92,6 +127,7 @@ namespace UndergroundRaces
 
         private void CambiarAMenuJuego()
         {
+            _juego.PausarSonido();
             _escenaActual = _menuJuego;
         }
 
@@ -112,6 +148,22 @@ namespace UndergroundRaces
                 _escenaActual = _historialEscenas.Pop(); // vuelve a escena anterior
             else
                 _escenaActual = _menu; // fallback
+        }
+        private void ReiniciarJuego()
+        {
+            // Crear nueva instancia de juego
+            _juego = new EscenaJuego();
+            _juego.LoadContent(this);
+            _juego.OnPausaSolicitada = CambiarAMenuJuego;
+
+            // Crear nueva instancia de selección
+            _menuSeleccionar = new EscenaMenuSeleccionar();
+            _menuSeleccionar.LoadContent(this);
+            _menuSeleccionar.OnSeleccionVehiculo = (veh) =>
+            {
+                _juego.SetVehiculo(veh);
+                _escenaActual = _juego;
+            };
         }
     }
 }

@@ -17,6 +17,7 @@ namespace UndergroundRaces
         private Rectangle _botonVolverMenu;
         private MouseState _mouse;
 
+        // Eventos públicos para que Game1 decida qué hacer
         public Action OnReanudarClick;
         public Action OnAjustesClick; 
         public Action OnVolverMenuClick;
@@ -29,9 +30,12 @@ namespace UndergroundRaces
             _graphicsDevice = game.GraphicsDevice;
             _content = game.Content;
 
+            // Fondo del menú de pausa
             _fondoMenuJuego = _content.Load<Texture2D>("images/menu-juego-underground-races-2025");
-            _botonReanudar = new Rectangle(200, 220, 200, 60);   
-            _botonAjustes = new Rectangle(220, 360, 200, 60);     
+
+            // Botones
+            _botonReanudar   = new Rectangle(200, 220, 200, 60);   
+            _botonAjustes    = new Rectangle(220, 360, 200, 60);     
             _botonVolverMenu = new Rectangle(670, 290, 200, 60);     
         }
 
@@ -51,8 +55,6 @@ namespace UndergroundRaces
             {
                 OnVolverMenuClick?.Invoke();
             }
-            _mouse = Mouse.GetState();
-            
         }
 
         public void Draw(SpriteBatch spriteBatch)
