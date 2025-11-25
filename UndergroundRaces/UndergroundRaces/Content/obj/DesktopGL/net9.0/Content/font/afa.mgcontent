@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/font/afa.spritefont</SourceFile>
-  <SourceTime>2025-11-24T19:11:43.042024-03:00</SourceTime>
-  <DestFile>c:/Users/Victor/Documents/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/font/afa.xnb</DestFile>
-  <DestTime>2025-11-24T21:56:17.6973967-03:00</DestTime>
+  <SourceFile>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/font/afa.spritefont</SourceFile>
+  <SourceTime>2025-10-20T10:59:04-03:00</SourceTime>
+  <DestFile>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/font/afa.xnb</DestFile>
+  <DestTime>2025-11-25T18:17:23.6694394-03:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2025-10-20T11:25:32-03:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

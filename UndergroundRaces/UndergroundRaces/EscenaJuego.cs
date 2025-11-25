@@ -99,18 +99,29 @@ namespace UndergroundRaces
         private const float _offsetMax = 20f; // pixeles hacia arriba
         private const float _offsetLerpSpeed = 8f; // rapidez de la interpolacion
 
-        // Carteles en la ruta (obstáculos)
-        private Texture2D _cartelObsActual;
-        private Vector2 _posCartelObs;
-        private Vector2 _posCartelObsInicial;
-        private float _timerCartelObs = 0f;
-        private float _tiempoCartelObs = 4f; // cada 4 segundos cambia
-        private int _indiceCartelObs = 0;
-        // Obstáculos en la ruta
-        private List<Vector2> _cartelesRuta = new();
-        private Texture2D _cartelRutaTexture;
-        private float _timerSpawnCartel = 0f;
-        private float _tiempoSpawnCartel = 5f; // cada 5 segundos aparece uno
+        // (Sistema antiguo de carteles en ruta eliminado: variables no usadas fueron limpiadas)
+
+        // Nuevo sistema de obstáculos como rectángulos
+        private class Obstaculo
+        {
+            public int Lane; // 0 = izquierda, 1 = centro, 2 = derecha
+            public float Progress; // 0 = lejano (en el horizonte) .. 1 = cerca (jugador)
+            public float Speed; // velocidad relativa de avance
+            public float BaseW;
+            public float BaseH;
+            public bool Hit; // si ya chocó con el jugador (para evitar múltiples colisiones)
+        }
+
+        private List<Obstaculo> _obstaculos = new();
+        private Random _rand = new Random();
+        private float _timerSpawnObstaculos = 0f;
+        private float _spawnIntervalObstaculos = 1.8f; // segundos entre spawns
+        private float _vanishingY = 500; // punto de fuga aproximado
+        private float _nearYOffset = 120f; // distancia vertical desde el auto hasta donde "caen" los obstaculos
+        private float _obstBaseW = 90f; // aumentado (antes 60)
+        private float _obstBaseH = 66f; // aumentado (antes 44)
+        private float _obstMinScale = 0.30f; // un poco más grande en lejania
+        private float _obstMaxScale = 2.6f; // aumentar el máximo aparente
 
         // Distancia recorrida
         private float _distanciaRecorrida = 0f;
@@ -124,6 +135,8 @@ namespace UndergroundRaces
         private ContentManager _content;
         private Texture2D _debugPixel;
         private SpriteFont _afaFont;
+        private Texture2D _obstSprite;
+        private SoundEffect _crashSound;
 
         public void LoadContent(Game game)
         {
@@ -187,14 +200,56 @@ namespace UndergroundRaces
             _posCartelDerInicial = _posCartelDer;
 
             _corsaPosition = new Vector2(screenWidth / 2f, 500);
-            _cartelObsActual = _carteles[_indiceCartelObs];
 
-            // posición inicial en el centro de la pista
-            _posCartelObs = new Vector2(_graphicsDevice.Viewport.Width / 2f, -100);
-            _posCartelObsInicial = _posCartelObs;
+            // Intentar cargar sprite específico para obstáculo desde Content
+            try
+            {
+                _obstSprite = _content.Load<Texture2D>("images/obstaculo");
+            }
+            catch
+            {
+                // fallback: usar el primer cartel si existe
+                if (_carteles.Count > 0)
+                    _obstSprite = _carteles[0];
+                else
+                    _obstSprite = null;
+            }
+
+            // posición inicial del marcador central del jugador (el sistema antiguo fue removido)
             // Pixel 1x1 para dibujado de rectángulos/debug
             _debugPixel = new Texture2D(_graphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
+
+            // Inicializar nuevo sistema de obstáculos (rectángulos)
+            _obstaculos = new List<Obstaculo>();
+            _timerSpawnObstaculos = 0f;
+            // ajustar el punto de fuga en función del alto de la pantalla
+            int screenHeight = _graphicsDevice.Viewport.Height;
+            // Ajustar punto de fuga para que los obstáculos nazcan sobre la carretera (no en el cielo)
+            // Valor tunable: ~0.40..0.48 suele situarlo en la línea del horizonte/entrada de la carretera
+            _vanishingY = screenHeight * 0.52f;
+
+            // Intentar cargar sonido de choque (varios nombres posibles según Content.mgcb)
+            _crashSound = null;
+            try
+            {
+                _crashSound = _content.Load<SoundEffect>("audio/car-crash_ext-6388 (mp3cut.net).wav");
+            }
+            catch
+            {
+                try
+                {
+                    _crashSound = _content.Load<SoundEffect>("audio/car-crash_ext-6388 (mp3cut.net)");
+                }
+                catch
+                {
+                    try
+                    {
+                        _crashSound = _content.Load<SoundEffect>("audio/car-crash");
+                    }
+                    catch { _crashSound = null; }
+                }
+            }
 
             // Cargar la fuente 'afa' para el medidor de velocidad (si existe)
             try
@@ -219,13 +274,15 @@ namespace UndergroundRaces
 
             bool pressingD = state.IsKeyDown(Keys.D);
             bool pressingA = state.IsKeyDown(Keys.A);
+            // Frenado antiguo: tecla S
+            bool currentlyBraking = state.IsKeyDown(Keys.Space);
 
             if (pressingD)
             {
                 _usandoAtlas = false;
                 _spriteEffect = SpriteEffects.None;
             }
-            else if (pressingA)
+            else if (pressingA) 
             {
                 _usandoAtlas = false;
                 _spriteEffect = SpriteEffects.FlipHorizontally;
@@ -250,6 +307,49 @@ namespace UndergroundRaces
                 _velocidadActual -= _desaceleracionRate * dt;
                 if (_velocidadActual < _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
             }
+
+            // Aplicar frenado manual si se mantiene S
+            if (currentlyBraking)
+            {
+                _velocidadActual -= _brakeRate * dt;
+                if (_velocidadActual < 0f) _velocidadActual = 0f;
+            }
+
+            // Reproducir/Detener sonido de freno al empezar/parar de frenar
+            if (currentlyBraking && !_isBraking)
+            {
+                try
+                {
+                    if (_brakeInstance != null)
+                    {
+                        _brakeInstance.IsLooped = false;
+                        _brakeInstance.Volume = 1f;
+                        _brakeInstance.Play();
+                    }
+                    else if (_brakeSong != null)
+                    {
+                        MediaPlayer.Play(_brakeSong);
+                    }
+                }
+                catch { }
+            }
+            else if (!currentlyBraking && _isBraking)
+            {
+                try
+                {
+                    if (_brakeInstance != null)
+                    {
+                        _brakeInstance.Stop();
+                    }
+                    else if (_brakeSong != null)
+                    {
+                        MediaPlayer.Stop();
+                    }
+                }
+                catch { }
+            }
+
+            _isBraking = currentlyBraking;
 
             float speedFactor = _velocidadMax > 0f ? _velocidadActual / _velocidadMax : 0f;
 
@@ -283,42 +383,167 @@ namespace UndergroundRaces
                 }
             }
 
-            // --- Obstáculo en la ruta ---
-            _posCartelObs += new Vector2(0, _velocidadCartel * (0.5f + speedFactor));
-
-            _timerCartelObs += dt;
-            if (_timerCartelObs >= _tiempoCartelObs)
+            // --- Obstáculos en la ruta (rectángulos rojos) ---
+            _timerSpawnObstaculos += dt * (0.5f + speedFactor);
+            if (_timerSpawnObstaculos >= _spawnIntervalObstaculos)
             {
-                _indiceCartelObs++;
-
-                if (_indiceCartelObs >= _carteles.Count)
+                // intentar elegir un carril que no tenga un obstáculo cercano para evitar acumulación
+                int chosenLane = -1;
+                int attempts = 3;
+                for (int a = 0; a < attempts; a++)
                 {
-                    // Llegó al último cartel → fin de carrera
-                    TimeSpan tiempoTotal = DateTime.Now - _tiempoInicio;
-                    string mensaje = $"El jugador terminó en {tiempoTotal.TotalSeconds:0.0} segundos";
-                    OnFinCarrera?.Invoke(mensaje); // tu manejador debe cambiar a MenuPrincipal
-                    return;
+                    int candidateLane = _rand.Next(0, 3);
+                    bool blocked = false;
+                    foreach (var exist in _obstaculos)
+                    {
+                        if (exist.Lane != candidateLane) continue;
+                        // si hay un obstáculo en ese carril que está relativamente cerca (progress > -0.25), considerarlo bloqueado
+                        if (exist.Progress > -0.25f)
+                        {
+                            blocked = true;
+                            break;
+                        }
+                    }
+                    if (!blocked)
+                    {
+                        chosenLane = candidateLane;
+                        break;
+                    }
                 }
 
-                _cartelObsActual = _carteles[_indiceCartelObs];
+                if (chosenLane == -1)
+                {
+                    // no se encontró carril libre: reintentar más tarde
+                    _timerSpawnObstaculos = _spawnIntervalObstaculos * 0.45f;
+                }
+                else
+                {
+                    Obstaculo nuevo = new Obstaculo();
+                    nuevo.Lane = chosenLane;
+                    nuevo.Progress = -0.18f; // empezar más lejos para separar
+                    nuevo.Speed = 1.6f; // base más rápida (antes 1f)
+                    nuevo.BaseW = _obstBaseW;
+                    nuevo.BaseH = _obstBaseH;
+                    nuevo.Hit = false;
 
-                // Posición aleatoria dentro de la ruta
-                float rutaMargenIzquierdo = 200f;
-                float rutaMargenDerecho = _graphicsDevice.Viewport.Width - 200f;
-                float xPos = new Random().Next((int)rutaMargenIzquierdo, (int)rutaMargenDerecho);
+                    // calcular rect del candidato en su posicion inicial
+                    Vector2 candPos = GetObstacleScreenPos(nuevo.Lane, nuevo.Progress);
+                    float candScale = MathHelper.Lerp(_obstMinScale, _obstMaxScale, MathHelper.Clamp(nuevo.Progress, 0f, 1f));
+                    float candW = nuevo.BaseW * candScale;
+                    float candH = nuevo.BaseH * candScale;
+                    Rectangle candRect = new Rectangle((int)(candPos.X - candW / 2f), (int)(candPos.Y - candH / 2f), (int)candW, (int)candH);
 
-                _posCartelObs = new Vector2(xPos, -100); // respawn desde arriba
-                _timerCartelObs = 0f;
+                    bool overlaps = false;
+                    foreach (var exist in _obstaculos)
+                    {
+                        Vector2 ePos = GetObstacleScreenPos(exist.Lane, exist.Progress);
+                        float eScale = MathHelper.Lerp(_obstMinScale, _obstMaxScale, MathHelper.Clamp(exist.Progress, 0f, 1f));
+                        float eW = exist.BaseW * eScale;
+                        float eH = exist.BaseH * eScale;
+                        Rectangle eRect = new Rectangle((int)(ePos.X - eW / 2f), (int)(ePos.Y - eH / 2f), (int)eW, (int)eH);
+                        if (candRect.Intersects(eRect))
+                        {
+                            overlaps = true;
+                            break;
+                        }
+                    }
+
+                    if (!overlaps)
+                    {
+                        _obstaculos.Add(nuevo);
+                        _timerSpawnObstaculos = 0f;
+                    }
+                    else
+                    {
+                        // si se superpone (caso raro), reintentar pronto
+                        _timerSpawnObstaculos = _spawnIntervalObstaculos * 0.45f;
+                    }
+                }
             }
 
-            // Colisión con obstáculo
-            Rectangle jugadorRect = new Rectangle((int)_corsaPosition.X - 40, (int)_corsaPosition.Y - 40, 80, 80);
-            Rectangle cartelRect = new Rectangle((int)_posCartelObs.X, (int)_posCartelObs.Y, 100, 100);
-
-            if (jugadorRect.Intersects(cartelRect))
+            // actualizar obstáculos
+            for (int i = _obstaculos.Count - 1; i >= 0; i--)
             {
-                _velocidadActual *= 0.5f; // ralentiza al jugador
-                _posCartelObs = new Vector2(_graphicsDevice.Viewport.Width / 2f, -100); // reinicia obstáculo
+                var o = _obstaculos[i];
+                // Hacer que los obstáculos frenen cuando el auto no está en velocidad.
+                // Si la velocidad del coche es <= 9 km/h, detener completamente los obstáculos (opción A).
+                float currentKmhObst = speedFactor * _velocidadMaxKmh;
+                if (currentKmhObst <= 9f)
+                {
+                    // detenido
+                    // no aplicar progreso
+                    continue;
+                }
+
+                // Subir la velocidad mínima para evitar acumulación cuando el coche se mueve
+                float obstacleSpeedMul = MathHelper.Lerp(0.35f, 1f, speedFactor);
+                float laneBoost = (o.Lane == 1) ? 1.18f : 1f;
+                float approachRate = 0.9f * obstacleSpeedMul * o.Speed * laneBoost;
+
+                // boost progresivo cuando el obstáculo se acerca al tamaño máximo
+                // ahora aplicado a todos los carriles (antes sólo al centro)
+                {
+                    float boostStart = 0.78f;
+                    if (o.Progress > boostStart)
+                    {
+                        float nearFactor = MathHelper.Clamp((o.Progress - boostStart) / (1f - boostStart), 0f, 1f);
+                        float extraBoost = MathHelper.Lerp(1f, 3.0f, nearFactor);
+                        approachRate *= extraBoost;
+                    }
+                }
+
+                // Garantizar un mínimo absoluto de progreso por segundo mientras el coche está en movimiento
+                // aumentar mínimo para que se sientan más rápidos incluso en baja velocidad
+                float minProgressPerSecond = 0.28f * o.Speed; // progreso mínimo por segundo (antes 0.18)
+                approachRate = Math.Max(approachRate, minProgressPerSecond);
+
+                o.Progress += approachRate * dt;
+
+                Vector2 pos = GetObstacleScreenPos(o.Lane, o.Progress);
+                float scale = MathHelper.Lerp(_obstMinScale, _obstMaxScale, MathHelper.Clamp(o.Progress, 0f, 1f));
+                float w = o.BaseW * scale;
+                float h = o.BaseH * scale;
+
+                Rectangle jugadorRect = new Rectangle((int)_corsaPosition.X - 40, (int)_corsaPosition.Y - 40, 80, 80);
+                Rectangle obstRect = new Rectangle((int)(pos.X - w / 2f), (int)(pos.Y - h / 2f), (int)w, (int)h);
+
+                // Colisión más explícita: reducir ambas hitboxes para requerir contacto visual
+                float hitboxFactor = 0.65f; // 0..1, menor = hitbox más pequeña (más estricto)
+                int jW = (int)(jugadorRect.Width * hitboxFactor);
+                int jH = (int)(jugadorRect.Height * hitboxFactor);
+                Rectangle jugadorHit = new Rectangle(jugadorRect.Center.X - jW / 2, jugadorRect.Center.Y - jH / 2, jW, jH);
+
+                int oW = (int)(obstRect.Width * hitboxFactor);
+                int oH = (int)(obstRect.Height * hitboxFactor);
+                Rectangle obstHit = new Rectangle(obstRect.Center.X - oW / 2, obstRect.Center.Y - oH / 2, oW, oH);
+
+                if (jugadorHit.Intersects(obstHit))
+                {
+                    // Al chocar con un obstáculo: reducir la velocidad y eliminar el obstáculo
+                    try
+                    {
+                        _velocidadActual *= 0.5f; // penalización de velocidad
+                    }
+                    catch { }
+
+                    // reproducir sonido de choque si está disponible
+                    try { _crashSound?.Play(); } catch { }
+
+                    // marcar y eliminar el obstáculo para que no quede en pantalla
+                    o.Hit = true;
+                    _obstaculos.RemoveAt(i);
+                    continue;
+                }
+
+                // Eliminar cuando el obstáculo haya pasado por delante del coche
+                // (da la sensación de que lo pasaste rápidamente). También mantener un
+                // fallback para eliminación cuando salen muy fuera de la pantalla.
+                int screenH = _graphicsDevice.Viewport.Height;
+                int removeBefore = (o.Lane == 1) ? 40 : 80; // eliminar antes si está en el centro
+                if (pos.Y > _corsaPosition.Y + removeBefore || pos.Y > screenH + 120)
+                {
+                    _obstaculos.RemoveAt(i);
+                }
             }
 
             // --- Fondo y carteles laterales ---
@@ -385,14 +610,20 @@ namespace UndergroundRaces
             float pitch = -0.2f + speedFactor * 0.8f;
             _motorInstance.Pitch = MathHelper.Clamp(pitch, -1f, 1f);
 
-            if (_indiceCartelObs >= _carteles.Count)
+            // Actualizar distancia recorrida (metros) usando la velocidad mostrada en km/h
+            float currentKmhForDistance = speedFactor * _velocidadMaxKmh;
+            float metersPerSecond = currentKmhForDistance / 3.6f;
+            _distanciaRecorrida += metersPerSecond * dt;
+
+            if (_distanciaRecorrida >= _distanciaObjetivo)
             {
-                // Llegó al último cartel → fin de carrera
                 TimeSpan tiempoTotal = DateTime.Now - _tiempoInicio;
-                string mensaje = $"El jugador terminó en {tiempoTotal.TotalSeconds:0.0} segundos";
-                OnFinCarrera?.Invoke(mensaje); // el manejador en Game1 cambia a MenuPrincipal
+                string mensaje = $"Game Over - {tiempoTotal.TotalSeconds:0.0} segundos";
+                OnFinCarrera?.Invoke(mensaje);
                 return;
             }
+
+            // (Bloque relacionado con sistema antiguo de carteles eliminado)
         }
 
 
@@ -449,8 +680,36 @@ namespace UndergroundRaces
             spriteBatch.Draw(_cartelIzqActual, _posCartelIzq, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             spriteBatch.Draw(_cartelDerActual, _posCartelDer, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 
-            // Dibujar cartel obstáculo en la ruta
-            spriteBatch.Draw(_cartelObsActual, _posCartelObs, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            // Dibujar obstáculos como rectángulos rojos siguiendo las tres trayectorias
+            foreach (var o in _obstaculos)
+            {
+                Vector2 pos = GetObstacleScreenPos(o.Lane, o.Progress);
+                float scale = MathHelper.Lerp(_obstMinScale, _obstMaxScale, MathHelper.Clamp(o.Progress, 0f, 1f));
+                float w = o.BaseW * scale;
+                float h = o.BaseH * scale;
+
+                // pequeña sombra/contorno
+                if (_obstSprite != null)
+                {
+                    // Dibujar sombra usando el propio sprite (offset y alpha) en lugar de un gran rectángulo
+                    Vector2 origin = new Vector2(_obstSprite.Width / 2f, _obstSprite.Height / 2f);
+                    float spriteScale = (_obstSprite.Width > 0) ? (w / _obstSprite.Width) : 1f;
+                    Vector2 shadowOffset = new Vector2(3f, 3f);
+                    spriteBatch.Draw(_obstSprite, pos + shadowOffset, null, Color.Black * 0.45f, 0f, origin, spriteScale * 1.02f, SpriteEffects.None, 0f);
+
+                    // Dibujar sprite del obstáculo
+                    spriteBatch.Draw(_obstSprite, pos, null, Color.White, 0f, origin, spriteScale, SpriteEffects.None, 0f);
+                }
+                else
+                {
+                    // pequeña sombra/contorno para fallback (rectángulo)
+                    Rectangle shadow = new Rectangle((int)(pos.X - w / 2f) - 2, (int)(pos.Y - h / 2f) - 2, (int)w + 4, (int)h + 4);
+                    spriteBatch.Draw(_debugPixel, shadow, Color.Black * 0.6f);
+
+                    Rectangle rect = new Rectangle((int)(pos.X - w / 2f), (int)(pos.Y - h / 2f), (int)w, (int)h);
+                    spriteBatch.Draw(_debugPixel, rect, Color.Red);
+                }
+            }
 
 
             // Dibujar un rectángulo rojo en la esquina superior derecha (margen 10px)
@@ -493,6 +752,32 @@ namespace UndergroundRaces
             }
 
             spriteBatch.End();
+        }
+
+        // Calcula la posición en pantalla de un obstáculo dado su carril (0/1/2) y su progreso (0..1)
+        private Vector2 GetObstacleScreenPos(int lane, float progress)
+        {
+            int screenW = _graphicsDevice.Viewport.Width;
+            float centerX = screenW / 2f;
+
+            float vanY = _vanishingY;
+            float nearY = _corsaPosition.Y - _nearYOffset;
+
+            // offsets laterales: pequeño en la distancia, grande al acercarse
+            float farOffset = Math.Max(40f, screenW * 0.06f); // un poco más separacion en la distancia
+            float nearOffset = Math.Min(380f, screenW * 0.44f);
+
+            // Reducir la separación lateral para que los costados queden más cerca del medio
+            float laneOuterFactor = 0.50f; // aplica a farOffset
+            float laneInnerFactor = 0.50f; // aplica a nearOffset
+
+            float laneFarX = centerX + (lane - 1) * farOffset * laneOuterFactor;
+            float laneNearX = centerX + (lane - 1) * nearOffset * laneInnerFactor;
+
+            float x = MathHelper.Lerp(laneFarX, laneNearX, progress);
+            float y = MathHelper.Lerp(vanY, nearY, progress);
+
+            return new Vector2(x, y);
         }
 
 
