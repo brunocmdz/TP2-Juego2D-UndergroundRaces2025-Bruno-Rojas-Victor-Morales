@@ -692,40 +692,7 @@ namespace UndergroundRaces
             Rectangle frameRect = _framesFondo[_frameActual];
             spriteBatch.Draw(_fondoAtlas, new Rectangle(0, 0, screenWidth, screenHeight), frameRect, Color.White);
 
-            if (_usandoAtlas)
-            {
-                if (_vehiculoSeleccionado == VehicleType.Corsa)
-                {
-                    Rectangle corsaRect = _framesCorsa[_frameCorsaActual];
-                    Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
-                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
-                    spriteBatch.Draw(_corsaAtlas, drawPos, corsaRect, Color.White, 0f, origin, _corsaScale, _spriteEffect, 0f);
-                }
-                else
-                {
-                    Rectangle clioRect = _framesClio[_frameCorsaActual];
-                    Vector2 origin = new Vector2(clioRect.Width / 2f, clioRect.Height / 2f);
-                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
-                    spriteBatch.Draw(_clioAtlas, drawPos, clioRect, Color.White, 0f, origin, _clioScale, _spriteEffect, 0f);
-                }
-            }
-            else
-            {
-                if (_vehiculoSeleccionado == VehicleType.Corsa)
-                {
-                    Rectangle corsaRect = _framesDoblando[_frameDoblandoActual];
-                    Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
-                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
-                    spriteBatch.Draw(_corsaDoblandoAtlas, drawPos, corsaRect, Color.White, 0f, origin, _corsaScale, _spriteEffect, 0f);
-                }
-                else
-                {
-                    Rectangle clioRect = _framesClioDoblando[_frameDoblandoActual];
-                    Vector2 origin = new Vector2(clioRect.Width / 2f, clioRect.Height / 2f);
-                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
-                    spriteBatch.Draw(_clioDoblandoAtlas, drawPos, clioRect, Color.White, 0f, origin, _clioScale, _spriteEffect, 0f);
-                }
-            }
+            // El vehículo se dibuja después de los obstáculos para que siempre aparezca por encima.
 
             spriteBatch.Draw(_cartelIzqActual, _posCartelIzq, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             spriteBatch.Draw(_cartelDerActual, _posCartelDer, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
@@ -758,6 +725,46 @@ namespace UndergroundRaces
 
                     Rectangle rect = new Rectangle((int)(pos.X - w / 2f), (int)(pos.Y - h / 2f), (int)w, (int)h);
                     spriteBatch.Draw(_debugPixel, rect, Color.Red);
+                }
+            }
+
+            // Ahora dibujar el vehículo encima de los obstáculos
+            if (_usandoAtlas)
+            {
+                if (_vehiculoSeleccionado == VehicleType.Corsa)
+                {
+                    Rectangle corsaRect = _framesCorsa[_frameCorsaActual];
+                    Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_corsaAtlas, drawPos, corsaRect, Color.White, 0f, origin, _corsaScale, _spriteEffect, 0f);
+                }
+                else
+                {
+                    Rectangle clioRect = _framesClio[_frameCorsaActual];
+                    Vector2 origin = new Vector2(clioRect.Width / 2f, clioRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_clioAtlas, drawPos, clioRect, Color.White, 0f, origin, _clioScale, _spriteEffect, 0f);
+                }
+            }
+            else
+            {
+                if (_vehiculoSeleccionado == VehicleType.Corsa)
+                {
+                    Rectangle corsaRect = _framesDoblando[_frameDoblandoActual];
+                    Vector2 origin = new Vector2(corsaRect.Width / 2f, corsaRect.Height / 2f);
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward);
+                    spriteBatch.Draw(_corsaDoblandoAtlas, drawPos, corsaRect, Color.White, 0f, origin, _corsaScale, _spriteEffect, 0f);
+                }
+                else
+                {
+                    Rectangle clioRect = _framesClioDoblando[_frameDoblandoActual];
+                    Vector2 origin = new Vector2(clioRect.Width / 2f, clioRect.Height / 2f);
+                    // Escalar ligeramente más cuando el Clio está doblando para enfatizar la animación
+                    float clioDoblandoScale = _clioScale * 1.20f;
+                    // Mover un poco más abajo al doblar para mejorar la sensación (valor en píxeles)
+                    float clioDoblandoYOffset = 10f;
+                    Vector2 drawPos = new Vector2(_corsaPosition.X, _corsaPosition.Y + _offsetForward + clioDoblandoYOffset);
+                    spriteBatch.Draw(_clioDoblandoAtlas, drawPos, clioRect, Color.White, 0f, origin, clioDoblandoScale, _spriteEffect, 0f);
                 }
             }
 

@@ -194,7 +194,7 @@
 /processorParam:TextureFormat=Color
 /build:images/clio-underground-races-2025-avanzando-plantilla.png
 
-#begin images/clio-underground-races-2025-doblando-plantilla.png
+#begin images/clio-underground-races-2025-doblando-plantilla (1).png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -204,7 +204,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:images/clio-underground-races-2025-doblando-plantilla.png
+/build:images/clio-underground-races-2025-doblando-plantilla (1).png;images/clio-underground-races-2025-doblando-plantilla.png
 
 #begin images/corsaDoblandoPLANTILLA.png
 /importer:TextureImporter
