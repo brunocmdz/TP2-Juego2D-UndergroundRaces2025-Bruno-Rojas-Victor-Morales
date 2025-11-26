@@ -231,3 +231,8 @@ c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bi
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\obstaculo.xnb
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.ogg
 c:\Users\bruno\Desktop\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\car-crash_ext-6388 (mp3cut.net).xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.ogg
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\obstaculo.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-juego-plantillas-underground-races-2025.xnb

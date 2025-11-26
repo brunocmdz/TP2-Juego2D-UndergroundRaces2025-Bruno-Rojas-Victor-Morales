@@ -254,6 +254,18 @@
 /processorParam:TextureFormat=Color
 /build:images/menu-ajustes-underground-races-2025.png
 
+#begin images/menu-juego-plantillas-underground-races-2025.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/menu-juego-plantillas-underground-races-2025.png
+
 #begin images/menu-juego-underground-races-2025.png
 /importer:TextureImporter
 /processor:TextureProcessor
