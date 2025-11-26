@@ -236,3 +236,4 @@ c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\audio\retro-arcade-game-music-297305.xnb
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\obstaculo.xnb
 c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-juego-plantillas-underground-races-2025.xnb
+c:\Users\Victor\Documents\UndergroundRaces2025\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-ajustes-plantillas-underground-races-2025.xnb

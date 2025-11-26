@@ -242,6 +242,18 @@
 /processorParam:TextureFormat=Color
 /build:images/faroles-underground-races-2025.png
 
+#begin images/menu-ajustes-plantillas-underground-races-2025.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/menu-ajustes-plantillas-underground-races-2025.png
+
 #begin images/menu-ajustes-underground-races-2025.png
 /importer:TextureImporter
 /processor:TextureProcessor
