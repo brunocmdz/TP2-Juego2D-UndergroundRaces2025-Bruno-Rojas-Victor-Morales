@@ -82,7 +82,6 @@ namespace UndergroundRaces
                 try
                 {
                     _menuSong = _content.Load<Song>(cand);
-                    Debug.WriteLine($"[Menu] Cargada canción de menú: {cand}");
                     break;
                 }
                 catch { /* intentar siguiente */ }
@@ -95,17 +94,13 @@ namespace UndergroundRaces
                     MediaPlayer.IsRepeating = true;
                     MediaPlayer.Volume = Settings.MusicVolume * Settings.MasterVolume;
                     MediaPlayer.Play(_menuSong);
-                    Debug.WriteLine("[Menu] Reproduciendo música de menú (Song).");
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[Menu] Error al reproducir Song: {ex.Message}");
                 }
             }
-            else
-            {
-                Debug.WriteLine("[Menu] No se encontró ninguna Song para la música del menú. Asegúrate de añadir el asset en Content.mgcb bajo 'audio/'.");
-            }
+
         }
 
         public void Update(GameTime gameTime)
@@ -125,12 +120,6 @@ namespace UndergroundRaces
             if (hovered != _lastHovered)
             {
                 _frameMenuActual = hovered;
-                // Log para depuración: ver si el estado del MediaPlayer cambia al seleccionar
-                try
-                {
-                    Debug.WriteLine($"[Menu] Hover cambiado a {hovered}. MediaPlayer.State={MediaPlayer.State}");
-                }
-                catch { }
                 _lastHovered = hovered;
             }
 

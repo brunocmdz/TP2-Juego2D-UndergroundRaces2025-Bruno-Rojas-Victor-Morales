@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../Downloads/menu-ajustes-underground-races-2025.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Downloads/menu-ajustes-underground-races-2025.png;images/menu-ajustes-underground-races-2025.png
+
 #begin audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net).wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -242,6 +254,18 @@
 /processorParam:TextureFormat=Color
 /build:images/faroles-underground-races-2025.png
 
+#begin images/GAMER OVER.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/GAMER OVER.png
+
 #begin images/menu-ajustes-plantillas-underground-races-2025.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -253,18 +277,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:images/menu-ajustes-plantillas-underground-races-2025.png
-
-#begin images/menu-ajustes-underground-races-2025.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:images/menu-ajustes-underground-races-2025.png
 
 #begin images/menu-juego-plantillas-underground-races-2025.png
 /importer:TextureImporter

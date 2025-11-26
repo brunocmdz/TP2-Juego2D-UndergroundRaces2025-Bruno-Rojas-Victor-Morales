@@ -23,6 +23,7 @@ namespace UndergroundRaces
         // Botón para volver al menú principal
         private Rectangle _botonVolver;
         private Texture2D _debugPixel;
+        private Texture2D _gameOverBg;
         private MouseState _mouse;
 
         public Action OnVolverClick;
@@ -46,6 +47,16 @@ namespace UndergroundRaces
             // Pixel para debug/dibujo
             _debugPixel = new Texture2D(_graphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
+
+            // Intentar cargar la imagen de Game Over (puede llamarse 'GAMER OVER.png' en Content)
+            try
+            {
+                _gameOverBg = _content.Load<Texture2D>("images/GAMER OVER");
+            }
+            catch
+            {
+                try { _gameOverBg = _content.Load<Texture2D>("images/game-over"); } catch { _gameOverBg = null; }
+            }
         }
 
         public void Update(GameTime gameTime)
@@ -65,8 +76,15 @@ namespace UndergroundRaces
         {
             spriteBatch.Begin();
 
-            // Fondo negro
-            spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height), Color.Black);
+            // Fondo: usar la imagen de Game Over si está disponible, sino fondo negro
+            if (_gameOverBg != null)
+            {
+                spriteBatch.Draw(_gameOverBg, new Rectangle(0, 0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height), Color.White);
+            }
+            else
+            {
+                spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height), Color.Black);
+            }
 
             // Mostrar mensaje en el centro
             if (_font != null)
