@@ -57,7 +57,7 @@ namespace UndergroundRaces
         // Sonido de frenado (puede cargarse como SoundEffect o Song segun el pipeline)
         private SoundEffect _brakeSound;
         private SoundEffectInstance _brakeInstance;
-        private Song _brakeSong;
+        private Song _brakeSong = null;
         private bool _isBraking = false;
         private float _motorVolume = 0f;
         private const float _volumenMaximo = 0.5f;
@@ -175,12 +175,16 @@ namespace UndergroundRaces
                 // intenta una ruta simple (sin espacios)
                 _brakeSound = _content.Load<SoundEffect>("audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net)");
                 _brakeInstance = _brakeSound.CreateInstance();
+                if (_brakeInstance != null)
+                    _brakeInstance.Volume = Settings.SfxVolume * Settings.MasterVolume;
             }
             catch
             {
                 // intentar con el nombre completo presente en Content.mgcb
                 _brakeSound = _content.Load<SoundEffect>("audio/Car Braking - Sound Effect [HQ] [XBR8NuELc4w] (mp3cut.net).wav");
                 _brakeInstance = _brakeSound.CreateInstance();
+                if (_brakeInstance != null)
+                    _brakeInstance.Volume = Settings.SfxVolume * Settings.MasterVolume;
 
             }
 
@@ -286,7 +290,7 @@ namespace UndergroundRaces
                     if (MediaPlayer.State != MediaState.Playing)
                     {
                         MediaPlayer.IsRepeating = true;
-                        MediaPlayer.Volume = 0.5f;
+                            MediaPlayer.Volume = Settings.MusicVolume * Settings.MasterVolume;
                         MediaPlayer.Play(_gameSong);
                         System.Diagnostics.Debug.WriteLine("[EscenaJuego] Reproduciendo música de juego (Song).");
                     }
@@ -311,6 +315,35 @@ namespace UndergroundRaces
                 System.Diagnostics.Debug.WriteLine($"[EscenaJuego] No se pudo cargar la fuente 'font/afa': {ex.Message}");
                 _afaFont = null;
             }
+
+            // Suscribirse a cambios de Settings para actualizar volúmenes en instancias activas
+            Settings.OnSfxChanged += () => {
+                try
+                {
+                    if (_motorInstance != null)
+                        _motorInstance.Volume = _motorVolume * Settings.SfxVolume * Settings.MasterVolume;
+                    if (_brakeInstance != null)
+                        _brakeInstance.Volume = Settings.SfxVolume * Settings.MasterVolume;
+                }
+                catch { }
+            };
+
+            Settings.OnMasterChanged += () => {
+                try
+                {
+                    if (_motorInstance != null)
+                        _motorInstance.Volume = _motorVolume * Settings.SfxVolume * Settings.MasterVolume;
+                    if (_brakeInstance != null)
+                        _brakeInstance.Volume = Settings.SfxVolume * Settings.MasterVolume;
+                    // también actualizar MediaPlayer si está sonando
+                    try { MediaPlayer.Volume = Settings.MusicVolume * Settings.MasterVolume; } catch { }
+                }
+                catch { }
+            };
+
+            Settings.OnMusicChanged += () => {
+                try { MediaPlayer.Volume = Settings.MusicVolume * Settings.MasterVolume; } catch { }
+            };
 
         }
 
@@ -373,7 +406,7 @@ namespace UndergroundRaces
                     if (_brakeInstance != null)
                     {
                         _brakeInstance.IsLooped = false;
-                        _brakeInstance.Volume = 1f;
+                        _brakeInstance.Volume = Settings.SfxVolume * Settings.MasterVolume;
                         _brakeInstance.Play();
                     }
                     else if (_brakeSong != null)
@@ -577,7 +610,7 @@ namespace UndergroundRaces
                     catch { }
 
                     // reproducir sonido de choque si está disponible
-                    try { _crashSound?.Play(); } catch { }
+                        try { _crashSound?.Play(Settings.SfxVolume * Settings.MasterVolume, 0f, 0f); } catch { }
 
                     // marcar y eliminar el obstáculo para que no quede en pantalla
                     o.Hit = true;
@@ -655,7 +688,9 @@ namespace UndergroundRaces
                 _motorVolume -= _velocidadCambioVolumen;
                 if (_motorVolume < targetVol) _motorVolume = targetVol;
             }
-            _motorInstance.Volume = _motorVolume;
+            // Aplicar control de SFX y volumen maestro desde Settings
+            if (_motorInstance != null)
+                _motorInstance.Volume = _motorVolume * Settings.SfxVolume * Settings.MasterVolume;
 
             float pitch = -0.2f + speedFactor * 0.8f;
             _motorInstance.Pitch = MathHelper.Clamp(pitch, -1f, 1f);
@@ -806,6 +841,13 @@ namespace UndergroundRaces
                     Vector2 txtPos = new Vector2(inner.X + (inner.Width - medidas.X) / 2f, inner.Y + 6);
                     spriteBatch.DrawString(_afaFont, texto, txtPos, Color.White);
                 }
+            }
+
+            // Aplicar overlay de brillo: dibujar rectángulo negro semitransparente para oscurecer según ajuste
+            float overlayAlpha = 1f - Settings.Brightness; // 0 = sin overlay, 1 = completamente negro
+            if (_debugPixel != null && overlayAlpha > 0f)
+            {
+                spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, screenWidth, screenHeight), Color.Black * overlayAlpha);
             }
 
             spriteBatch.End();

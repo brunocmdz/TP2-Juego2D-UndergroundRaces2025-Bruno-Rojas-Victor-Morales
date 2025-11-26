@@ -93,7 +93,7 @@ namespace UndergroundRaces
                 try
                 {
                     MediaPlayer.IsRepeating = true;
-                    MediaPlayer.Volume = 0.5f;
+                    MediaPlayer.Volume = Settings.MusicVolume * Settings.MasterVolume;
                     MediaPlayer.Play(_menuSong);
                     Debug.WriteLine("[Menu] Reproduciendo música de menú (Song).");
                 }
@@ -199,6 +199,13 @@ namespace UndergroundRaces
             }
 
          
+            // Aplicar overlay de brillo tampoco en el menú
+            float overlayAlpha = 1f - Settings.Brightness;
+            if (_debugPixel != null && overlayAlpha > 0f)
+            {
+                spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, 1024, 576), Color.Black * overlayAlpha);
+            }
+
             spriteBatch.End();
         }
 
