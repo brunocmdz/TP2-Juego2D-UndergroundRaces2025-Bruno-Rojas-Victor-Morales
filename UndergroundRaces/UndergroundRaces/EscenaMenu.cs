@@ -116,7 +116,6 @@ namespace UndergroundRaces
             if (_botonJugar.Contains(_mouse.Position)) hovered = 0;
             else if (_botonAjustes.Contains(_mouse.Position)) hovered = 1;
             else if (_botonSalir.Contains(_mouse.Position)) hovered = 2;
-
             if (hovered != _lastHovered)
             {
                 _frameMenuActual = hovered;

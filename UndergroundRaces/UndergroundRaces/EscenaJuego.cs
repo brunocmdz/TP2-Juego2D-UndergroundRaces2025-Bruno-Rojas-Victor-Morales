@@ -804,7 +804,35 @@ namespace UndergroundRaces
             }
 
 
-            // Dibujar un rectángulo rojo en la esquina superior derecha (margen 10px)
+            // Medidor de progreso arriba (centro superior) - muestra qué tan lejos está de la meta
+            if (_debugPixel != null && _afaFont != null)
+            {
+                int progressBarW = 500;
+                int progressBarH = 40;
+                int topMargin = 15;
+                Rectangle progressContainer = new Rectangle((screenWidth - progressBarW) / 2, topMargin, progressBarW, progressBarH);
+                
+                // fondo del contenedor
+                spriteBatch.Draw(_debugPixel, progressContainer, new Color(40, 40, 40, 220));
+                
+                // calcular progreso hacia la meta (0..1)
+                float progressFactor = MathHelper.Clamp(_distanciaRecorrida / _distanciaObjetivo, 0f, 1f);
+                
+                // barra de progreso interior
+                int barPad = 6;
+                Rectangle progressBarBg = new Rectangle(progressContainer.X + barPad, progressContainer.Y + barPad + 16, progressContainer.Width - barPad * 2, 12);
+                spriteBatch.Draw(_debugPixel, progressBarBg, Color.DarkGray);
+                Rectangle progressBarFill = new Rectangle(progressBarBg.X, progressBarBg.Y, (int)(progressBarBg.Width * progressFactor), progressBarBg.Height);
+                spriteBatch.Draw(_debugPixel, progressBarFill, Color.Gold);
+                
+                // texto: distancia actual / objetivo
+                string distText = string.Format("{0:0}m / {1:0}m", _distanciaRecorrida, _distanciaObjetivo);
+                Vector2 distSize = _afaFont.MeasureString(distText);
+                Vector2 distPos = new Vector2(progressContainer.X + (progressContainer.Width - distSize.X) / 2f, progressContainer.Y + 2);
+                spriteBatch.DrawString(_afaFont, distText, distPos, Color.White);
+            }
+
+            // Dibujar un rectángulo rojo en la esquina superior derecha (margen 10px) - velocímetro
             int rectW = 180;
             int rectH = 100;
             Rectangle topRightRect = new Rectangle(screenWidth - rectW - 10, 10, rectW, rectH);
