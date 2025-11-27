@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/audio/menu-selection-102220.mp3</SourceFile>
-  <SourceTime>2025-11-24T13:25:19.3056466-03:00</SourceTime>
-  <DestFile>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/menu-selection-102220.xnb</DestFile>
-  <DestTime>2025-11-26T10:33:02.4698817-03:00</DestTime>
+  <SourceFile>c:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/menu-selection-102220.mp3</SourceFile>
+  <SourceTime>2025-11-26T23:51:26.7681245-03:00</SourceTime>
+  <DestFile>c:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/menu-selection-102220.xnb</DestFile>
+  <DestTime>2025-11-26T23:53:35.2835998-03:00</DestTime>
   <Importer>Mp3Importer</Importer>
   <ImporterTime>2025-10-20T11:25:32-03:00</ImporterTime>
   <Processor>SongProcessor</Processor>
@@ -15,6 +15,6 @@
   <Dependencies />
   <BuildAsset />
   <BuildOutput>
-    <string>c:/Users/bruno/Desktop/UndergroundRaces2025/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/menu-selection-102220.ogg</string>
+    <string>c:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/menu-selection-102220.ogg</string>
   </BuildOutput>
 </PipelineBuildEvent>

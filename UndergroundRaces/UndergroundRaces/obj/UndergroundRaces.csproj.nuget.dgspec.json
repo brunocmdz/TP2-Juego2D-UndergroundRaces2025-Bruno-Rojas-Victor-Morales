@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\bruno\\Desktop\\UndergroundRaces2025\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj": {}
+    "c:\\Users\\bruno\\Desktop\\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj": {}
   },
   "projects": {
-    "c:\\Users\\bruno\\Desktop\\UndergroundRaces2025\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj": {
+    "c:\\Users\\bruno\\Desktop\\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\bruno\\Desktop\\UndergroundRaces2025\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj",
+        "projectUniqueName": "c:\\Users\\bruno\\Desktop\\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj",
         "projectName": "UndergroundRaces",
-        "projectPath": "c:\\Users\\bruno\\Desktop\\UndergroundRaces2025\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj",
+        "projectPath": "c:\\Users\\bruno\\Desktop\\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\\UndergroundRaces\\UndergroundRaces\\UndergroundRaces.csproj",
         "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\bruno\\Desktop\\UndergroundRaces2025\\UndergroundRaces\\UndergroundRaces\\obj\\",
+        "outputPath": "c:\\Users\\bruno\\Desktop\\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\\UndergroundRaces\\UndergroundRaces\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
