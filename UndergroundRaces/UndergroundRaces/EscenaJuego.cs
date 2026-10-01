@@ -955,28 +955,45 @@ namespace UndergroundRaces
             }
         }
         public void SetVehiculo(VehicleType veh)
-        {
-            // Asigna el vehículo seleccionado por el jugador
-            _vehiculoSeleccionado = veh;
+{
+    // Asigna el vehículo seleccionado por el jugador
+    _vehiculoSeleccionado = veh;
 
-            // Reinicia posición del jugador en el centro de la pantalla
-            int screenWidth = _graphicsDevice.Viewport.Width;
-            _corsaPosition = new Vector2(screenWidth / 2f, 500);
+    // Reinicia posición del jugador en el centro de la pantalla
+    int screenWidth = _graphicsDevice.Viewport.Width;
+    _corsaPosition = new Vector2(screenWidth / 2f, 500);
 
-            // Reinicia variables de animación
-            _frameCorsaActual = 0;
-            _frameDoblandoActual = 0;
-            _offsetForward = 0f;
-            _velocidadActual = 0f;
-            _velocidadObjetivo = 0f;
+    // Reinicia variables de animación
+    _frameCorsaActual = 0;
+    _frameDoblandoActual = 0;
+    _timerCorsa = 0f;
+    _timerDoblando = 0f;
+    _offsetForward = 0f;
+    _offsetForwardTarget = 0f;
+    _velocidadActual = 0f;
+    _velocidadObjetivo = 0f;
+    _avanzando = false;
 
-            // Reinicia efectos visuales
-            _spriteEffect = SpriteEffects.None;
-            _usandoAtlas = true;
-            if (_motorInstance != null)
-            _motorInstance.Play();
-            _tiempoInicio = DateTime.Now;
-        }
+    // Reinicia la carrera (distancia y obstáculos)
+    _distanciaRecorrida = 0f;
+    _obstaculos.Clear();
+    _timerSpawnObstaculos = 0f;
+
+    // Reinicia efectos visuales
+    _spriteEffect = SpriteEffects.None;
+    _usandoAtlas = true;
+
+    // Reinicia sonidos
+    _motorVolume = 0f;
+    _isBraking = false;
+    if (_motorInstance != null)
+    {
+        _motorInstance.Volume = 0f;
+        _motorInstance.Play();
+    }
+
+    _tiempoInicio = DateTime.Now;
+}
         public void PausarSonido()
         {
             if (_motorInstance != null)

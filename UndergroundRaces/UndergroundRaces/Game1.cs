@@ -43,84 +43,60 @@ namespace UndergroundRaces
             _menu.OnAjustesClick = CambiarAEscenaAjustes;
             _menu.OnSalirClick = Exit;
 
-            // Menú seleccionar vehículo
-            _menuSeleccionar = new EscenaMenuSeleccionar();
-            _menuSeleccionar.LoadContent(this);
-
-            // Escena de juego
-            _juego = new EscenaJuego();
-            _juego.LoadContent(this);
-            _juego.OnPausaSolicitada = CambiarAMenuJuego;
-
-            // Conectar selección de vehículo → juego
-            _menuSeleccionar.OnSeleccionVehiculo = (veh) =>
-            {
-                _juego.SetVehiculo(veh);
-
-                // Suscripción al evento de fin de carrera
-                _juego.OnFinCarrera += (mensaje) =>
-                {
-                    // Detener inmediatamente el sonido del juego para evitar que el motor siga sonando en Game Over
-                    try { _juego.DetenerSonido(); } catch { }
-
-                    var menuConMensaje = new EscenaMenuConMensaje(mensaje);
-                    menuConMensaje.LoadContent(this);
-
-                    // Botón volver al menú principal
-                    menuConMensaje.OnVolverClick = () =>
-                    {
-                        // Asegurar que el sonido está detenido antes de reiniciar
-                        try { _juego.DetenerSonido(); } catch { }
-                        ReiniciarJuego();
-
-                        _menu = new EscenaMenu();
-                        _menu.LoadContent(this);
-                        _menu.OnJugarClick = CambiarAEscenaSeleccionar;
-                        _menu.OnAjustesClick = CambiarAEscenaAjustes;
-                        _menu.OnSalirClick = Exit;
-
-                        _escenaActual = _menu;
-                    };
-
-                    _escenaActual = menuConMensaje;
-                };
-
-                _escenaActual = _juego;
-            };
-
-            // Menú de pausa dentro del juego
+            // Menú de pausa durante el juego
             _menuJuego = new EscenaMenuJuego();
             _menuJuego.LoadContent(this);
-            _menuJuego.OnReanudarClick = CambiarAEscenaJuego;
-            _menuJuego.OnVolverMenuClick = CambiarAMenuPrincipal;
+            _menuJuego.OnReanudarClick = ReanudarJuego;
             _menuJuego.OnAjustesClick = CambiarAEscenaAjustes;
+            _menuJuego.OnVolverMenuClick = () =>
+            {
+                _juego.DetenerSonido();
+                ReiniciarJuego();
+                _escenaActual = _menu;
+            };
 
-            // Menú de ajustes
+            // Menú de ajustes (Usa OnVolverClick como tenías en tu EscenaMenuAjustes.cs)
             _menuAjustes = new EscenaMenuAjustes();
             _menuAjustes.LoadContent(this);
             _menuAjustes.OnVolverClick = VolverDesdeAjustes;
 
-            // Escena inicial
+            // Inicializar juego y menú de selección
+            ReiniciarJuego();
+
             _escenaActual = _menu;
         }
 
-        protected override void Update(GameTime gameTime)
+        private void ReiniciarJuego()
         {
-            _escenaActual.Update(gameTime);
-            base.Update(gameTime);
+            _juego = new EscenaJuego();
+            _juego.LoadContent(this);
+            _juego.OnPausaSolicitada = CambiarAMenuJuego;
+
+            _juego.OnFinCarrera = (mensaje) =>
+            {
+                _juego.DetenerSonido();
+                var gameOver = new EscenaMenuConMensaje(mensaje);
+                gameOver.LoadContent(this);
+                gameOver.OnVolverClick = () =>
+                {
+                    ReiniciarJuego();      // nueva partida limpia
+                    _escenaActual = _menu;
+                };
+                _escenaActual = gameOver;
+            };
+
+            _menuSeleccionar = new EscenaMenuSeleccionar();
+            _menuSeleccionar.LoadContent(this);
+            _menuSeleccionar.OnSeleccionVehiculo = (veh) =>
+            {
+                _juego.SetVehiculo(veh);
+                _escenaActual = _juego;
+            };
         }
 
-        protected override void Draw(GameTime gameTime)
+        private void ReanudarJuego()
         {
-            GraphicsDevice.Clear(Color.Black);
-            _escenaActual.Draw(_spriteBatch);
-            base.Draw(gameTime);
-        }
-
-        // Métodos de cambio de escena
-        private void CambiarAEscenaJuego()
-        { 
-            _juego.ReanudarSonido(); 
+            _juego.ReanudarSonido();
             _escenaActual = _juego;
         }
 
@@ -142,32 +118,34 @@ namespace UndergroundRaces
 
         private void CambiarAEscenaAjustes()
         {
-            _historialEscenas.Push(_escenaActual); // guarda escena actual
+            _historialEscenas.Push(_escenaActual);
             _escenaActual = _menuAjustes;
         }
 
         private void VolverDesdeAjustes()
         {
             if (_historialEscenas.Count > 0)
-                _escenaActual = _historialEscenas.Pop(); // vuelve a escena anterior
+                _escenaActual = _historialEscenas.Pop();
             else
-                _escenaActual = _menu; // fallback
+                _escenaActual = _menu;
         }
-        private void ReiniciarJuego()
-        {
-            // Crear nueva instancia de juego
-            _juego = new EscenaJuego();
-            _juego.LoadContent(this);
-            _juego.OnPausaSolicitada = CambiarAMenuJuego;
 
-            // Crear nueva instancia de selección
-            _menuSeleccionar = new EscenaMenuSeleccionar();
-            _menuSeleccionar.LoadContent(this);
-            _menuSeleccionar.OnSeleccionVehiculo = (veh) =>
-            {
-                _juego.SetVehiculo(veh);
-                _escenaActual = _juego;
-            };
+        protected override void Update(GameTime gameTime)
+        {
+            if (_escenaActual != null)
+                _escenaActual.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Black);
+
+            if (_escenaActual != null)
+                _escenaActual.Draw(_spriteBatch);
+
+            base.Draw(gameTime);
         }
     }
 }
