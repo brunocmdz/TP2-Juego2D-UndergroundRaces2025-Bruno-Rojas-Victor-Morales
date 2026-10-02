@@ -9,6 +9,7 @@
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/menu-selection-102220.mp3</File>
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/motor-corsa.wav</File>
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/retro-arcade-game-music-297305.mp3</File>
+    <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/race-start-beeps.mp3</File>
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/font/afa.spritefont</File>
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/images/background (2) (1).png</File>
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/images/background (2) (2).png</File>
@@ -39,6 +40,7 @@
     <File>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/menu-ajustes-underground-races-2025.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

@@ -128,6 +128,8 @@ namespace UndergroundRaces
         private float _distanciaRecorrida = 0f;
         private float _distanciaObjetivo = 1200f; // metros para terminar
         private DateTime _tiempoInicio;
+        private float _cuentaRegresiva;
+        private bool _carreraIniciada;
 
         // Evento de fin de carrera
         public Action<string> OnFinCarrera;
@@ -139,6 +141,8 @@ namespace UndergroundRaces
         private Texture2D _obstSprite;
         private SoundEffect _crashSound;
         private Song _gameSong;
+        private Song _raceStartSong;
+        private bool _reproduciendoAudioInicio;
 
         public void LoadContent(Game game)
         {
@@ -284,6 +288,12 @@ namespace UndergroundRaces
             }
             catch { _gameSong = null; }
 
+            try
+            {
+                _raceStartSong = _content.Load<Song>("audio/race-start-beeps");
+            }
+            catch { _raceStartSong = null; }
+
             if (_gameSong != null)
             {
                 try
@@ -352,6 +362,42 @@ namespace UndergroundRaces
         {
             var state = Keyboard.GetState();
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!_carreraIniciada)
+            {
+                if (state.IsKeyDown(Keys.Escape))
+                {
+                    OnPausaSolicitada?.Invoke();
+                    return;
+                }
+
+                _cuentaRegresiva -= dt;
+                if (_cuentaRegresiva > 0f)
+                    return;
+
+                _carreraIniciada = true;
+                _tiempoInicio = DateTime.Now;
+
+                if (_reproduciendoAudioInicio)
+                {
+                    try
+                    {
+                        if (_gameSong != null)
+                        {
+                            MediaPlayer.IsRepeating = true;
+                            MediaPlayer.Volume = Settings.MusicVolume * Settings.MasterVolume;
+                            MediaPlayer.Play(_gameSong);
+                        }
+                        else
+                        {
+                            MediaPlayer.Stop();
+                        }
+                    }
+                    catch { }
+
+                    _reproduciendoAudioInicio = false;
+                }
+            }
 
             if (state.IsKeyDown(Keys.Escape))
                 OnPausaSolicitada?.Invoke();
@@ -882,6 +928,22 @@ namespace UndergroundRaces
                 spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, screenWidth, screenHeight), Color.Black * overlayAlpha);
             }
 
+            if (!_carreraIniciada && _afaFont != null)
+            {
+                string cuentaTexto = _reproduciendoAudioInicio
+                    ? (_cuentaRegresiva > 3f ? "3" : _cuentaRegresiva > 2f ? "2" : _cuentaRegresiva > 1f ? "1" : "YA!")
+                    : Math.Max(1, (int)Math.Ceiling(_cuentaRegresiva)).ToString();
+                float cuentaEscala = 9f;
+                Vector2 cuentaSize = _afaFont.MeasureString(cuentaTexto) * cuentaEscala;
+                Vector2 cuentaPos = new Vector2(
+                    (screenWidth - cuentaSize.X) / 2f,
+                    (screenHeight - cuentaSize.Y) / 2f);
+                spriteBatch.DrawString(_afaFont, cuentaTexto, cuentaPos + new Vector2(3f, 3f), Color.Black,
+                    0f, Vector2.Zero, cuentaEscala, SpriteEffects.None, 0f);
+                spriteBatch.DrawString(_afaFont, cuentaTexto, cuentaPos, Color.Gold,
+                    0f, Vector2.Zero, cuentaEscala, SpriteEffects.None, 0f);
+            }
+
             spriteBatch.End();
         }
 
@@ -980,6 +1042,21 @@ namespace UndergroundRaces
 
     // Reinicia la carrera (distancia y obstáculos)
     _distanciaRecorrida = 0f;
+    _cuentaRegresiva = 3f;
+    _carreraIniciada = false;
+    _reproduciendoAudioInicio = false;
+    if (_raceStartSong != null)
+    {
+        try
+        {
+            MediaPlayer.IsRepeating = false;
+            MediaPlayer.Volume = Settings.SfxVolume * Settings.MasterVolume;
+            MediaPlayer.Play(_raceStartSong);
+            _cuentaRegresiva = (float)_raceStartSong.Duration.TotalSeconds;
+            _reproduciendoAudioInicio = true;
+        }
+        catch { }
+    }
     _obstaculos.Clear();
     _timerSpawnObstaculos = 0f;
 
@@ -996,12 +1073,17 @@ namespace UndergroundRaces
         _motorInstance.Play();
     }
 
-    _tiempoInicio = DateTime.Now;
 }
         public void PausarSonido()
         {
             if (_motorInstance != null)
                 _motorInstance.Pause();
+            try
+            {
+                if (MediaPlayer.State == MediaState.Playing)
+                    MediaPlayer.Pause();
+            }
+            catch { }
         }
         public void DetenerSonido()
         {
@@ -1016,6 +1098,12 @@ namespace UndergroundRaces
             {
                 _motorInstance.Resume();
             }
+            try
+            {
+                if (MediaPlayer.State == MediaState.Paused)
+                    MediaPlayer.Resume();
+            }
+            catch { }
         }
     }
 }
