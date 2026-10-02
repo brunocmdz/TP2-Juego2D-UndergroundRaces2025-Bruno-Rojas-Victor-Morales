@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using static UndergroundRaces.RecordManager;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using System;
@@ -125,7 +126,7 @@ namespace UndergroundRaces
 
         // Distancia recorrida
         private float _distanciaRecorrida = 0f;
-        private float _distanciaObjetivo = 2000f; // metros para terminar
+        private float _distanciaObjetivo = 1200f; // metros para terminar
         private DateTime _tiempoInicio;
 
         // Evento de fin de carrera
@@ -703,7 +704,10 @@ namespace UndergroundRaces
             if (_distanciaRecorrida >= _distanciaObjetivo)
             {
                 TimeSpan tiempoTotal = DateTime.Now - _tiempoInicio;
-                string mensaje = $"Game Over - {tiempoTotal.TotalSeconds:0.0} segundos";
+                bool nuevoRecord = RecordManager.Registrar(tiempoTotal);
+                string mensaje = $"Game Over - {tiempoTotal.TotalSeconds:0.0} segundos\n{RecordManager.TextoRecordActual()}";
+                if (nuevoRecord)
+                    mensaje = $"Nuevo record!\n{mensaje}";
                 OnFinCarrera?.Invoke(mensaje);
                 return;
             }

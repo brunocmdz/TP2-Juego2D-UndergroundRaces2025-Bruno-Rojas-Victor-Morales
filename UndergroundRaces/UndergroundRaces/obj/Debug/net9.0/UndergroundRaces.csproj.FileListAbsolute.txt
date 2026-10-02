@@ -282,7 +282,6 @@ c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Moral
 c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\faroles-underground-races-2025.xnb
 c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\GAMER OVER.xnb
 c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-ajustes-plantillas-underground-races-2025.xnb
-c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-ajustes-underground-races-2025.xnb
 c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-juego-plantillas-underground-races-2025.xnb
 c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-juego-underground-races-2025.xnb
 c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\images\menu-principal-seleccionar.xnb
@@ -413,3 +412,7 @@ c:\Users\Victor\Documents\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Mo
 c:\Users\Victor\Documents\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\obj\Debug\net9.0\Undergro.FEB47551.Up2Date
 c:\Users\Victor\Documents\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\obj\Debug\net9.0\UndergroundRaces.genruntimeconfig.cache
 c:\Users\Victor\Documents\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\obj\Debug\net9.0\ref\UndergroundRaces.dll
+c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\Content\menu-ajustes-underground-races-2025.xnb
+c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\runtimes\win-arm64\native\openal.dll
+c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\runtimes\linux-arm64\native\libSDL2-2.0.so.0
+c:\Users\bruno\Desktop\TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales\UndergroundRaces\UndergroundRaces\bin\Debug\net9.0\runtimes\win-arm64\native\SDL2.dll

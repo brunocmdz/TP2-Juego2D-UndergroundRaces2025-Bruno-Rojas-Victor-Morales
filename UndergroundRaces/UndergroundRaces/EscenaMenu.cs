@@ -26,6 +26,7 @@ namespace UndergroundRaces
         private ContentManager _content;
         private Texture2D _debugPixel;
         private Song _menuSong;
+        private SpriteFont _font;
 
         private Rectangle _botonJugar;
         private Rectangle _botonAjustes; 
@@ -43,6 +44,7 @@ namespace UndergroundRaces
         {
             _graphicsDevice = game.GraphicsDevice;
             _content = game.Content;
+            _font = _content.Load<SpriteFont>("font/afa");
             // Botones: valores por defecto (ajustados para la plantilla)
             _botonJugar = new Rectangle(390, 200, 220, 100);
             _botonAjustes = new Rectangle(340, 330, 300, 100);
@@ -193,6 +195,9 @@ namespace UndergroundRaces
             {
                 spriteBatch.Draw(_debugPixel, new Rectangle(0, 0, 1024, 576), Color.Black * overlayAlpha);
             }
+
+            if (_font != null)
+                spriteBatch.DrawString(_font, RecordManager.TextoRecordActual(), new Vector2(20, 20), Color.White);
 
             spriteBatch.End();
         }

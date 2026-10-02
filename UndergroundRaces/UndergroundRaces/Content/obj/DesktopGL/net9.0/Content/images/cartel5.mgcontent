@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/Victor/Documents/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/images/cartel5.png</SourceFile>
-  <SourceTime>2026-10-01T14:52:00.6847973-03:00</SourceTime>
-  <DestFile>c:/Users/Victor/Documents/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/images/cartel5.xnb</DestFile>
-  <DestTime>2026-10-01T15:01:11.2501913-03:00</DestTime>
+  <SourceFile>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/images/cartel5.png</SourceFile>
+  <SourceTime>2026-10-02T10:01:37.0469195-03:00</SourceTime>
+  <DestFile>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/images/cartel5.xnb</DestFile>
+  <DestTime>2026-10-02T10:09:14.2998026-03:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-10-20T11:25:32-03:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
