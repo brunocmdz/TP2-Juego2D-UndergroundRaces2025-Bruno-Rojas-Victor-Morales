@@ -140,6 +140,8 @@ namespace UndergroundRaces
         private SpriteFont _afaFont;
         private Texture2D _obstSprite;
         private SoundEffect _crashSound;
+        private SoundEffect _crowdCheerSound;
+        private SoundEffectInstance _crowdCheerInstance;
         private Song _gameSong;
         private Song _raceStartSong;
         private bool _reproduciendoAudioInicio;
@@ -294,6 +296,18 @@ namespace UndergroundRaces
             }
             catch { _raceStartSong = null; }
 
+            try
+            {
+                _crowdCheerSound = _content.Load<SoundEffect>("audio/crowd-cheer");
+                _crowdCheerInstance = _crowdCheerSound.CreateInstance();
+                _crowdCheerInstance.IsLooped = false;
+            }
+            catch
+            {
+                _crowdCheerSound = null;
+                _crowdCheerInstance = null;
+            }
+
             if (_gameSong != null)
             {
                 try
@@ -377,6 +391,7 @@ namespace UndergroundRaces
 
                 _carreraIniciada = true;
                 _tiempoInicio = DateTime.Now;
+                _crowdCheerInstance?.Stop();
 
                 if (_reproduciendoAudioInicio)
                 {
@@ -1045,6 +1060,17 @@ namespace UndergroundRaces
     _cuentaRegresiva = 3f;
     _carreraIniciada = false;
     _reproduciendoAudioInicio = false;
+    _crowdCheerInstance?.Stop();
+    if (_crowdCheerInstance != null)
+    {
+        try
+        {
+            _crowdCheerInstance.Volume = Settings.SfxVolume * Settings.MasterVolume * 0.2f;
+            _crowdCheerInstance.Play();
+        }
+        catch { }
+    }
+
     if (_raceStartSong != null)
     {
         try
@@ -1078,6 +1104,8 @@ namespace UndergroundRaces
         {
             if (_motorInstance != null)
                 _motorInstance.Pause();
+            if (_crowdCheerInstance?.State == SoundState.Playing)
+                _crowdCheerInstance.Pause();
             try
             {
                 if (MediaPlayer.State == MediaState.Playing)
@@ -1091,6 +1119,7 @@ namespace UndergroundRaces
             {
                 _motorInstance.Stop();
             }
+            _crowdCheerInstance?.Stop();
         }
         public void ReanudarSonido()
         {
@@ -1098,6 +1127,8 @@ namespace UndergroundRaces
             {
                 _motorInstance.Resume();
             }
+            if (_crowdCheerInstance?.State == SoundState.Paused)
+                _crowdCheerInstance.Resume();
             try
             {
                 if (MediaPlayer.State == MediaState.Paused)

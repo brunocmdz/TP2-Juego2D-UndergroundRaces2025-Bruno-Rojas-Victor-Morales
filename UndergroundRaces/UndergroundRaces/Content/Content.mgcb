@@ -49,6 +49,12 @@
 /processorParam:Quality=Best
 /build:audio/race-start-beeps.mp3
 
+#begin audio/crowd-cheer.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:audio/crowd-cheer.wav
+
 #begin font/afa.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

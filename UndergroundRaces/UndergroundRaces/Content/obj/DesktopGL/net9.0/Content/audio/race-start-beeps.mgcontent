@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/race-start-beeps.mp3</SourceFile>
+  <SourceFile>c:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/audio/race-start-beeps.mp3</SourceFile>
   <SourceTime>2026-10-02T10:22:07.3119744-03:00</SourceTime>
-  <DestFile>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/race-start-beeps.xnb</DestFile>
-  <DestTime>2026-10-02T10:25:14.4216047-03:00</DestTime>
+  <DestFile>c:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/race-start-beeps.xnb</DestFile>
+  <DestTime>2026-10-02T10:38:20.5012051-03:00</DestTime>
   <Importer>Mp3Importer</Importer>
   <ImporterTime>2025-10-20T11:25:32-03:00</ImporterTime>
   <Processor>SongProcessor</Processor>
@@ -15,6 +15,6 @@
   <Dependencies />
   <BuildAsset />
   <BuildOutput>
-    <string>C:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/race-start-beeps.ogg</string>
+    <string>c:/Users/bruno/Desktop/TP2-Juego2D-UndergroundRaces2025-Bruno-Rojas-Victor-Morales/UndergroundRaces/UndergroundRaces/Content/bin/DesktopGL/Content/audio/race-start-beeps.ogg</string>
   </BuildOutput>
 </PipelineBuildEvent>
