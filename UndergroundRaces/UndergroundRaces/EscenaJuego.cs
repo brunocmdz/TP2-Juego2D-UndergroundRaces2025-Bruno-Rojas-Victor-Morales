@@ -85,9 +85,12 @@ namespace UndergroundRaces
         // Aceleración / velocidad
         private float _velocidadActual = 0f;
         private float _velocidadObjetivo = 0f;
+        private float _penalizacionAceleracionRestante;
         private const float _velocidadMax = 18.0f;
         private const float _aceleracionRate = 6.0f; // unidades por segundo (aumentada)
         private const float _desaceleracionRate = 6.0f; // unidades por segundo (aumentada)
+        private const float _duracionPenalizacionChoque = 3f;
+        private const float _multiplicadorAceleracionChoque = 0.35f;
         // Valor de la frenada al mantener S (unidades por segundo)
         private const float _brakeRate = 12.0f;
         // Ritmo de desaceleración por inercia (coasting) cuando se suelta el acelerador
@@ -116,7 +119,6 @@ namespace UndergroundRaces
         private List<Obstaculo> _obstaculos = new();
         private Random _rand = new Random();
         private float _timerSpawnObstaculos = 0f;
-        private float _spawnIntervalObstaculos = 1.8f; // segundos entre spawns
         private float _vanishingY = 500; // punto de fuga aproximado
         private float _nearYOffset = 120f; // distancia vertical desde el auto hasta donde "caen" los obstaculos
         private float _obstBaseW = 90f; // aumentado (antes 60)
@@ -444,7 +446,14 @@ namespace UndergroundRaces
 
             if (_velocidadActual < _velocidadObjetivo)
             {
-                _velocidadActual += _aceleracionRate * dt;
+                float aceleracionActual = _aceleracionRate;
+                if (_penalizacionAceleracionRestante > 0f)
+                {
+                    aceleracionActual *= _multiplicadorAceleracionChoque;
+                    _penalizacionAceleracionRestante = Math.Max(0f, _penalizacionAceleracionRestante - dt);
+                }
+
+                _velocidadActual += aceleracionActual * dt;
                 if (_velocidadActual > _velocidadObjetivo) _velocidadActual = _velocidadObjetivo;
             }
             else if (_velocidadActual > _velocidadObjetivo)
@@ -529,8 +538,30 @@ namespace UndergroundRaces
             }
 
             // --- Obstáculos en la ruta (rectángulos rojos) ---
+            float spawnInterval = Settings.DifficultyLevel switch
+            {
+                1 => 2.6f,
+                2 => 2.2f,
+                3 => 1.8f,
+                4 => 1.15f,
+                _ => 0.75f
+            };
+            float obstacleBaseSpeed = Settings.DifficultyLevel switch
+            {
+                1 => 1.0f,
+                2 => 1.3f,
+                3 => 1.6f,
+                4 => 2.1f,
+                _ => 2.7f
+            };
+            float laneRepeatThreshold = Settings.DifficultyLevel switch
+            {
+                4 => 0.2f,
+                5 => 0.45f,
+                _ => -0.25f
+            };
             _timerSpawnObstaculos += dt * (0.5f + speedFactor);
-            if (_timerSpawnObstaculos >= _spawnIntervalObstaculos)
+            if (_timerSpawnObstaculos >= spawnInterval)
             {
                 // intentar elegir un carril que no tenga un obstáculo cercano para evitar acumulación
                 int chosenLane = -1;
@@ -542,8 +573,7 @@ namespace UndergroundRaces
                     foreach (var exist in _obstaculos)
                     {
                         if (exist.Lane != candidateLane) continue;
-                        // si hay un obstáculo en ese carril que está relativamente cerca (progress > -0.25), considerarlo bloqueado
-                        if (exist.Progress > -0.25f)
+                        if (exist.Progress > laneRepeatThreshold)
                         {
                             blocked = true;
                             break;
@@ -559,14 +589,14 @@ namespace UndergroundRaces
                 if (chosenLane == -1)
                 {
                     // no se encontró carril libre: reintentar más tarde
-                    _timerSpawnObstaculos = _spawnIntervalObstaculos * 0.45f;
+                    _timerSpawnObstaculos = spawnInterval * 0.45f;
                 }
                 else
                 {
                     Obstaculo nuevo = new Obstaculo();
                     nuevo.Lane = chosenLane;
                     nuevo.Progress = -0.18f; // empezar más lejos para separar
-                    nuevo.Speed = 1.6f; // base más rápida (antes 1f)
+                    nuevo.Speed = obstacleBaseSpeed;
                     nuevo.BaseW = _obstBaseW;
                     nuevo.BaseH = _obstBaseH;
                     nuevo.Hit = false;
@@ -601,7 +631,7 @@ namespace UndergroundRaces
                     else
                     {
                         // si se superpone (caso raro), reintentar pronto
-                        _timerSpawnObstaculos = _spawnIntervalObstaculos * 0.45f;
+                        _timerSpawnObstaculos = spawnInterval * 0.45f;
                     }
                 }
             }
@@ -668,6 +698,7 @@ namespace UndergroundRaces
                     try
                     {
                         _velocidadActual *= 0.5f; // penalización de velocidad
+                        _penalizacionAceleracionRestante = _duracionPenalizacionChoque;
                     }
                     catch { }
 
@@ -1053,6 +1084,7 @@ namespace UndergroundRaces
     _offsetForwardTarget = 0f;
     _velocidadActual = 0f;
     _velocidadObjetivo = 0f;
+    _penalizacionAceleracionRestante = 0f;
     _avanzando = false;
 
     // Reinicia la carrera (distancia y obstáculos)

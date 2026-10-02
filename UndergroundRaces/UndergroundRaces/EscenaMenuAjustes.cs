@@ -23,10 +23,13 @@ namespace UndergroundRaces
         private GraphicsDevice _graphicsDevice;
         private ContentManager _content;
         private Texture2D _debugPixel;
+        private SpriteFont _font;
         private MouseState _mouse;
         private MouseState _prevMouse;
 
         private Rectangle _botonAtras;
+        private Rectangle _difficultyMinus;
+        private Rectangle _difficultyPlus;
         private Rectangle _sfxMinus, _sfxPlus, _musicMinus, _musicPlus, _masterMinus, _masterPlus, _brightMinus, _brightPlus;
         private Rectangle _sfxBar, _musicBar, _masterBar, _brightBar;
 
@@ -36,6 +39,7 @@ namespace UndergroundRaces
         {
             _graphicsDevice = game.GraphicsDevice;
             _content = game.Content;
+            _font = _content.Load<SpriteFont>("font/afa");
 
             _fondoAtlas = _content.Load<Texture2D>("images/menu-ajustes-plantillas-underground-races-2025");
 
@@ -51,6 +55,8 @@ namespace UndergroundRaces
             }
 
             _botonAtras = new Rectangle(20, 20, 60, 60);
+            _difficultyMinus = new Rectangle(706, 125, 36, 32);
+            _difficultyPlus = new Rectangle(950, 125, 36, 32);
 
             _debugPixel = new Texture2D(_graphicsDevice, 1, 1);
             _debugPixel.SetData(new[] { Color.White });
@@ -102,6 +108,9 @@ namespace UndergroundRaces
             if (_mouse.LeftButton == ButtonState.Pressed &&
                 _prevMouse.LeftButton == ButtonState.Released)
             {
+                if (_difficultyMinus.Contains(_mouse.Position)) Settings.DecreaseDifficulty();
+                else if (_difficultyPlus.Contains(_mouse.Position)) Settings.IncreaseDifficulty();
+
                 if (_sfxMinus.Contains(_mouse.Position)) Settings.DecreaseSfx();
                 else if (_sfxPlus.Contains(_mouse.Position)) Settings.IncreaseSfx();
 
@@ -143,8 +152,47 @@ namespace UndergroundRaces
             DrawBar(spriteBatch, _musicBar, Settings.MusicVolume, Color.Yellow);
             DrawBar(spriteBatch, _masterBar, Settings.MasterVolume, Color.Red);
             DrawBar(spriteBatch, _brightBar, Settings.Brightness, Color.White);
+            DrawDifficultySelector(spriteBatch);
 
             spriteBatch.End();
+        }
+
+        private void DrawDifficultySelector(SpriteBatch spriteBatch)
+        {
+            Rectangle panel = new Rectangle(696, 86, 300, 82);
+            spriteBatch.Draw(_debugPixel, panel, new Color(92, 0, 30, 230));
+            DrawOutline(spriteBatch, panel, Color.DarkRed, 3);
+
+            spriteBatch.Draw(_debugPixel, _difficultyMinus, Color.DarkRed);
+            spriteBatch.Draw(_debugPixel, _difficultyPlus, Color.DarkRed);
+            DrawOutline(spriteBatch, _difficultyMinus, Color.Gold, 2);
+            DrawOutline(spriteBatch, _difficultyPlus, Color.Gold, 2);
+
+            DrawCenteredText(spriteBatch, "-", _difficultyMinus, Color.Gold);
+            DrawCenteredText(spriteBatch, "+", _difficultyPlus, Color.Gold);
+
+            string title = "DIFICULTAD";
+            Vector2 titleSize = _font.MeasureString(title);
+            spriteBatch.DrawString(_font, title, new Vector2(panel.Center.X - titleSize.X / 2f, panel.Y + 5), Color.Gold);
+
+            string levelText = $"{Settings.DifficultyLevel}/5 {Settings.DifficultyName}";
+            Vector2 levelSize = _font.MeasureString(levelText);
+            spriteBatch.DrawString(_font, levelText, new Vector2(panel.Center.X - levelSize.X / 2f, panel.Y + 48), Color.White);
+        }
+
+        private void DrawCenteredText(SpriteBatch spriteBatch, string text, Rectangle area, Color color)
+        {
+            Vector2 size = _font.MeasureString(text);
+            Vector2 position = new Vector2(area.Center.X - size.X / 2f, area.Center.Y - size.Y / 2f);
+            spriteBatch.DrawString(_font, text, position, color);
+        }
+
+        private void DrawOutline(SpriteBatch spriteBatch, Rectangle area, Color color, int thickness)
+        {
+            spriteBatch.Draw(_debugPixel, new Rectangle(area.X, area.Y, area.Width, thickness), color);
+            spriteBatch.Draw(_debugPixel, new Rectangle(area.X, area.Bottom - thickness, area.Width, thickness), color);
+            spriteBatch.Draw(_debugPixel, new Rectangle(area.X, area.Y, thickness, area.Height), color);
+            spriteBatch.Draw(_debugPixel, new Rectangle(area.Right - thickness, area.Y, thickness, area.Height), color);
         }
 
         private void DrawBar(SpriteBatch spriteBatch, Rectangle area, float value, Color color)

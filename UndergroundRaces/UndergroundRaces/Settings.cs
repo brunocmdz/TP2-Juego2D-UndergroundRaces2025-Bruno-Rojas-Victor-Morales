@@ -10,6 +10,10 @@ namespace UndergroundRaces
         public static int SfxLevel { get; set; } = 5;
         public static int MasterLevel { get; set; } = 5;
         public static int BrightnessLevel { get; set; } = 10;
+        public const int MaxDifficultyLevel = 5;
+        private static readonly string[] DifficultyNames = { "MUY FACIL", "FACIL", "NORMAL", "DIFICIL", "EXTREMO" };
+        public static int DifficultyLevel { get; private set; } = 3;
+        public static string DifficultyName => DifficultyNames[Math.Clamp(DifficultyLevel - 1, 0, MaxDifficultyLevel - 1)];
 
         public static float MusicVolume => Math.Clamp(MusicLevel / (float)MaxLevel, 0f, 1f);
         public static float SfxVolume => Math.Clamp(SfxLevel / (float)MaxLevel, 0f, 1f);
@@ -30,5 +34,7 @@ namespace UndergroundRaces
         public static void DecreaseMaster() { if (MasterLevel > 0) { MasterLevel--; OnMasterChanged?.Invoke(); } }
         public static void IncreaseBrightness() { if (BrightnessLevel < MaxLevel) { BrightnessLevel++; OnBrightnessChanged?.Invoke(); } }
         public static void DecreaseBrightness() { if (BrightnessLevel > 0) { BrightnessLevel--; OnBrightnessChanged?.Invoke(); } }
+        public static void IncreaseDifficulty() { if (DifficultyLevel < MaxDifficultyLevel) DifficultyLevel++; }
+        public static void DecreaseDifficulty() { if (DifficultyLevel > 1) DifficultyLevel--; }
     }
 }
